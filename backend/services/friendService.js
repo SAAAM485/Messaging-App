@@ -26,13 +26,16 @@ class FriendshipError extends Error {
 const friendService = {
     /** 檢查關係 */
     checkFriendship: async (userId, friendId) => {
-        sendRequestSchema.parse({ userId, friendId });
-        return getFriendship(userId, friendId);
+        const { userId: uId, friendId: fId } = sendRequestSchema.parse({
+            userId,
+            friendId,
+        });
+        return getFriendship(uId, fId);
     },
 
     /** 取得所有已接受好友 */
     getAllAcceptedFriends: async (userId) => {
-        const validatedUserId = idSchema.parse({ userId });
+        const validatedUserId = idSchema.parse(userId);
         return listAllAcceptedFriends(validatedUserId);
     },
 
@@ -82,9 +85,6 @@ const friendService = {
             userId,
         });
         const req = await getRequestById(reqId);
-        if (!req || req.userId !== uId) {
-            throw new FriendshipError("Cannot cancel this request.");
-        }
         if (![req.userId, req.friendId].includes(uId)) {
             throw new FriendshipError("Not authorized to cancel this request.");
         }
@@ -93,13 +93,13 @@ const friendService = {
 
     /** 列出收到的邀請 */
     getIncomingRequests: async (userId) => {
-        const validatedUserId = idSchema.parse({ userId });
+        const validatedUserId = idSchema.parse(userId);
         return listIncomingRequests(validatedUserId);
     },
 
     /** 列出我發出的邀請 */
     getOutgoingRequests: async (userId) => {
-        const validatedUserId = idSchema.parse({ userId });
+        const validatedUserId = idSchema.parse(userId);
         return listOutgoingRequests(validatedUserId);
     },
 };

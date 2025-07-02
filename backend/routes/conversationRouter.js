@@ -1,0 +1,16 @@
+const express = require("express");
+const router = express.Router();
+const conversationController = require("../controllers/conversationController");
+const jwtAuth = require("../middlewares/jwtAuth");
+
+router.use(jwtAuth);
+
+router
+    .route("/:conversationId/participants")
+    .delete(conversationController.removeUserFromConversation)
+    .get(conversationController.listParticipants)
+    .post(conversationController.addUserToConversation);
+router.get("/:conversationId", conversationController.getConversation);
+router.post("/", conversationController.postConversation);
+
+module.exports = router;

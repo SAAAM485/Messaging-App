@@ -27,6 +27,8 @@ model User {
   friendOf      Friend[]                  @relation("FriendOf")
   sentMessages  Message[]
   conversations ConversationParticipant[]
+
+  @@unique([provider, providerId], name: "provider_providerId")
 }
 
 model Friend {

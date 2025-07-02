@@ -22,18 +22,23 @@ const handleError = (err, res) => {
 
 const extractParams = (req, keys) =>
     keys.reduce((acc, key) => {
-        if (req.params[key] !== undefined) acc[key] = req.params[key];
-        if (req.body[key] !== undefined) acc[key] = req.body[key];
+        if (req.params[key] !== undefined) {
+            acc[key] = req.params[key];
+        } else if (req.body && req.body[key] !== undefined) {
+            acc[key] = req.body[key];
+        }
         return acc;
     }, {});
 
 const messageController = {
     /** 發送訊息 */
     postMessage: async (req, res) => {
-        const { conversationId, userId, content, imageUrl } = extractParams(
-            req,
-            ["conversationId", "userId", "content", "imageUrl"]
-        );
+        const { conversationId, content, imageUrl } = extractParams(req, [
+            "conversationId",
+            "content",
+            "imageUrl",
+        ]);
+        const userId = req.user.userId;
         try {
             const message = await messageService.sendMessage({
                 conversationId,
@@ -54,6 +59,7 @@ const messageController = {
             "take",
             "skip",
         ]);
+
         try {
             const messages = await messageService.getMessages({
                 conversationId,

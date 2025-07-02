@@ -7,16 +7,9 @@ const createConvSchema = z.object({
         .array(z.string().cuid(), "Invalid user ID format")
         .min(1, "At least one participant is required"),
 });
-const convPartIdSchema = z.object({
-    convPartId: z.string().cuid(),
-});
-const convIdSchema = z.object({
-    conversationId: z.string().cuid(),
-});
-const userIdSchema = z.object({
-    userId: z.string().cuid(),
-});
-
+const convPartIdSchema = z.string().cuid();
+const convIdSchema = z.string().cuid();
+const userIdSchema = z.string().cuid();
 module.exports = {
     createConvSchema,
     convPartIdSchema,

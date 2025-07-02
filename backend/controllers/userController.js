@@ -1,4 +1,3 @@
-const { message } = require("../db/client");
 const { userService, UserError } = require("../services/userService");
 const jwt = require("jsonwebtoken");
 
@@ -26,15 +25,18 @@ const handleError = (err, res) => {
 // 參數解構中介
 const extractParams = (req, keys) =>
     keys.reduce((acc, key) => {
-        if (req.params[key] !== undefined) acc[key] = req.params[key];
-        if (req.body[key] !== undefined) acc[key] = req.body[key];
+        if (req.params[key] !== undefined) {
+            acc[key] = req.params[key];
+        } else if (req.body && req.body[key] !== undefined) {
+            acc[key] = req.body[key];
+        }
         return acc;
     }, {});
 
 const userController = {
     /** 取得使用者檔案 */
     getUserProfile: async (req, res) => {
-        const { userId } = extractParams(req, ["userId"]);
+        const userId = req.user.userId;
         try {
             const userProfile = await userService.getUserProfile(userId);
             return res.status(200).json({ success: true, data: userProfile });
@@ -44,7 +46,7 @@ const userController = {
     },
 
     /** 依 email 取得使用者 */
-    getUserProfileByEmail: async (req, res) => {
+    getUserByEmail: async (req, res) => {
         const { email } = extractParams(req, ["email"]);
         try {
             const userProfile = await userService.getUserProfileByEmail(email);
@@ -66,7 +68,7 @@ const userController = {
 
     /** 更新使用者資料 */
     updateUserProfile: async (req, res) => {
-        const { userId } = extractParams(req, ["userId"]);
+        const userId = req.user.userId;
         try {
             const updatedUser = await userService.updateUserProfile(
                 userId,
@@ -80,10 +82,10 @@ const userController = {
 
     /** 更新最後上線時間 */
     updateLastSeen: async (req, res) => {
-        const { userId } = extractParams(req, ["userId"]);
+        const userId = req.user.userId;
         try {
             await userService.touchLastSeen(userId);
-            return res.sendStatus(200).json({
+            return res.status(200).json({
                 success: true,
                 data: { message: "Last seen updated." },
             });
@@ -94,7 +96,7 @@ const userController = {
 
     /** 取得使用者的所有對話 */
     getUserConversations: async (req, res) => {
-        const { userId } = extractParams(req, ["userId"]);
+        const userId = req.user.userId;
         try {
             const conversations = await userService.getConversations(userId);
             return res.status(200).json({ success: true, data: conversations });
@@ -116,7 +118,12 @@ const userController = {
             );
             // 簽發 JWT
             const token = jwt.sign(
-                { userId: user.id, name: user.name },
+                {
+                    userId: user.id,
+                    name: user.name,
+                    email: user.email,
+                    provider: provider,
+                },
                 process.env.JWT_SECRET,
                 { expiresIn: "120h" }
             );

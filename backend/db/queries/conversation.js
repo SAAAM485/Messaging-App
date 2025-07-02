@@ -24,9 +24,9 @@ module.exports = {
         }),
 
     // 刪除 participant（退出群組）
-    removeParticipant: (conversationParticipantId) =>
-        prisma.conversationParticipant.delete({
-            where: { id: conversationParticipantId },
+    removeParticipant: ({ conversationId, userId }) =>
+        prisma.conversationParticipant.deleteMany({
+            where: { conversationId, userId },
         }),
 
     // 查 conversation 的所有 participant

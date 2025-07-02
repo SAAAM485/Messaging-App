@@ -1,3 +1,4 @@
+const { user } = require("../db/client");
 const {
     conversationService,
     ConversationError,
@@ -25,8 +26,11 @@ const handleError = (err, res) => {
 
 const extractParams = (req, keys) =>
     keys.reduce((acc, key) => {
-        if (req.params[key] !== undefined) acc[key] = req.params[key];
-        if (req.body[key] !== undefined) acc[key] = req.body[key];
+        if (req.params[key] !== undefined) {
+            acc[key] = req.params[key];
+        } else if (req.body && req.body[key] !== undefined) {
+            acc[key] = req.body[key];
+        }
         return acc;
     }, {});
 
@@ -56,16 +60,25 @@ const conversationController = {
 
     /** 加入使用者到對話 */
     addUserToConversation: async (req, res) => {
-        const { conversationId, userId } = extractParams(req, [
+        const { conversationId, participantId } = extractParams(req, [
             "conversationId",
-            "userId",
+            "participantId",
         ]);
         try {
             const updatedConv = await conversationService.addUserToConversation(
                 conversationId,
-                userId
+                participantId
             );
-            return res.status(200).json({ success: true, data: updatedConv });
+            const participants =
+                await conversationService.getConversationParticipants(
+                    conversationId
+                );
+            return res
+                .status(200)
+                .json({
+                    success: true,
+                    data: { ...updatedConv, participants },
+                });
         } catch (err) {
             return handleError(err, res);
         }
@@ -74,11 +87,16 @@ const conversationController = {
     /** 移除使用者從對話 */
     removeUserFromConversation: async (req, res) => {
         const { conversationId } = extractParams(req, ["conversationId"]);
+        const userId = req.user.userId;
         try {
-            const updatedConv = await conversationService.leaveConversation(
-                conversationId
-            );
-            return res.status(200).json({ success: true, data: updatedConv });
+            await conversationService.leaveConversation(conversationId, userId);
+            const participants =
+                await conversationService.getConversationParticipants(
+                    conversationId
+                );
+            return res
+                .status(200)
+                .json({ success: true, data: { participants } });
         } catch (err) {
             return handleError(err, res);
         }
@@ -92,9 +110,13 @@ const conversationController = {
                 await conversationService.getConversationParticipants(
                     conversationId
                 );
-            return res.status(200).json({ success: true, data: participants });
+            return res
+                .status(200)
+                .json({ success: true, data: { participants } });
         } catch (err) {
             return handleError(err, res);
         }
     },
 };
+
+module.exports = conversationController;

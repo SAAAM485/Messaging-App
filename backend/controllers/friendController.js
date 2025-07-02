@@ -22,15 +22,19 @@ const handleError = (err, res) => {
 
 const extractParams = (req, keys) =>
     keys.reduce((acc, key) => {
-        if (req.params[key] !== undefined) acc[key] = req.params[key];
-        if (req.body[key] !== undefined) acc[key] = req.body[key];
+        if (req.params[key] !== undefined) {
+            acc[key] = req.params[key];
+        } else if (req.body && req.body[key] !== undefined) {
+            acc[key] = req.body[key];
+        }
         return acc;
     }, {});
 
 const friendController = {
     /** 檢查關係 */
     getFriendship: async (req, res) => {
-        const { userId, friendId } = extractParams(req, ["userId", "friendId"]);
+        const { friendId } = extractParams(req, ["friendId"]);
+        const userId = req.user.userId;
         try {
             const relationship = await friendService.checkFriendship(
                 userId,
@@ -44,7 +48,7 @@ const friendController = {
 
     /** 取得所有已接受好友 */
     getAllAcceptedFriendship: async (req, res) => {
-        const { userId } = extractParams(req, ["userId"]);
+        const userId = req.user.userId;
         try {
             const friends = await friendService.getAllAcceptedFriends(userId);
             return res.status(200).json({ success: true, data: friends });
@@ -55,7 +59,8 @@ const friendController = {
 
     /** 發送好友邀請 */
     sendFriendRequest: async (req, res) => {
-        const { userId, friendId } = extractParams(req, ["userId", "friendId"]);
+        const { friendId } = extractParams(req, ["friendId"]);
+        const userId = req.user.userId;
         try {
             const request = await friendService.sendFriendRequest(
                 userId,
@@ -69,10 +74,8 @@ const friendController = {
 
     /** 確認並接受好友邀請 */
     confirmFriendRequest: async (req, res) => {
-        const { requestId, userId } = extractParams(req, [
-            "requestId",
-            "userId",
-        ]);
+        const { requestId } = extractParams(req, ["requestId"]);
+        const userId = req.user.userId;
         try {
             const updatedRequest = await friendService.confirmFriendRequest(
                 requestId,
@@ -88,10 +91,8 @@ const friendController = {
 
     /** 取消或拒絕邀請 */
     deleteFriendRequest: async (req, res) => {
-        const { requestId, userId } = extractParams(req, [
-            "requestId",
-            "userId",
-        ]);
+        const { requestId } = extractParams(req, ["requestId"]);
+        const userId = req.user.userId;
         try {
             await friendService.cancelFriendRequest(requestId, userId);
             return res.status(200).json({
@@ -107,7 +108,7 @@ const friendController = {
 
     /** 取得所有收到的邀請 */
     getAllReceivedRequests: async (req, res) => {
-        const { userId } = extractParams(req, ["userId"]);
+        const userId = req.user.userId;
         try {
             const requests = await friendService.getIncomingRequests(userId);
             return res.status(200).json({ success: true, data: requests });
@@ -118,7 +119,7 @@ const friendController = {
 
     /** 取得所有發出的邀請 */
     getAllSentRequests: async (req, res) => {
-        const { userId } = extractParams(req, ["userId"]);
+        const userId = req.user.userId;
         try {
             const requests = await friendService.getOutgoingRequests(userId);
             return res.status(200).json({ success: true, data: requests });
