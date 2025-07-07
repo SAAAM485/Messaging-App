@@ -8,6 +8,7 @@ const createProfileSchema = z.object({
         .max(30, "Name max 30 characters"),
     email: z.string().email("Invalid email address"),
     image: z.string().url("Invalid image URL"),
+    motto: z.string().max(100, "Motto max 100 characters").optional(),
     bio: z.string().max(160, "Bio max 160 characters").optional(),
 });
 

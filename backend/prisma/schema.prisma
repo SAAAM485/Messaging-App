@@ -19,6 +19,7 @@ model User {
   name          String?
   email         String?                   @unique
   image         String?
+  motto         String?
   bio           String?
   lastSeen      DateTime?
   provider      String
@@ -66,4 +67,5 @@ model ConversationParticipant {
   conversationId String
   user           User         @relation(fields: [userId], references: [id])
   userId         String
+  lastReadAt     DateTime?    @default(now())
 }

@@ -19,8 +19,8 @@ module.exports = {
         prisma.user.update({ where: { id }, data: { lastSeen: time } }),
 
     // 列出使用者所有會話（附帶最後一筆訊息、member list）
-    listConversations: (userId) =>
-        prisma.conversationParticipant.findMany({
+    listConversations: async (userId) => {
+        const parts = await prisma.conversationParticipant.findMany({
             where: { userId },
             include: {
                 conversation: {
@@ -30,7 +30,25 @@ module.exports = {
                     },
                 },
             },
-        }),
+        });
+        const results = await Promise.all(
+            parts.map(async (p) => {
+                const unreadCount = await prisma.message.count({
+                    where: {
+                        conversationId: p.conversationId,
+                        sentAt: { gt: p.lastReadAt || new Date(0) },
+                    },
+                });
+                return {
+                    ...p.conversation,
+                    unreadCount,
+                    lastReadAt: p.lastReadAt,
+                };
+            })
+        );
+
+        return results;
+    },
 
     findOrCreateAuthUser: async (provider, providerId, email, name, image) =>
         prisma.user.upsert({

@@ -73,12 +73,10 @@ const conversationController = {
                 await conversationService.getConversationParticipants(
                     conversationId
                 );
-            return res
-                .status(200)
-                .json({
-                    success: true,
-                    data: { ...updatedConv, participants },
-                });
+            return res.status(200).json({
+                success: true,
+                data: { ...updatedConv, participants },
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -113,6 +111,22 @@ const conversationController = {
             return res
                 .status(200)
                 .json({ success: true, data: { participants } });
+        } catch (err) {
+            return handleError(err, res);
+        }
+    },
+
+    markAsRead: async (req, res) => {
+        const { conversationId } = extractParams(req, ["conversationId"]);
+        const userId = req.user.userId;
+        try {
+            const updatedLastRead = await conversationService.updateLastRead(
+                conversationId,
+                userId
+            );
+            return res
+                .status(200)
+                .json({ success: true, data: updatedLastRead });
         } catch (err) {
             return handleError(err, res);
         }

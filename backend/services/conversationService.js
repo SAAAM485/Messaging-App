@@ -73,6 +73,12 @@ const conversationService = {
         const convId = convIdSchema.parse(conversationId);
         return listParticipants(convId);
     },
+
+    updateLastRead: async (conversationId, userId) => {
+        const convId = convIdSchema.parse(conversationId);
+        const uId = userIdSchema.parse(userId);
+        return updateLastReadAt(convId, uId);
+    },
 };
 
 module.exports = {

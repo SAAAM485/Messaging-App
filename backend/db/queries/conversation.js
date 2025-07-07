@@ -35,4 +35,11 @@ module.exports = {
             where: { conversationId },
             include: { user: true },
         }),
+
+    // 更新 participant 的 lastReadAt
+    updateLastReadAt: (conversationId, userId) =>
+        prisma.conversationParticipant.update({
+            where: { conversationId, userId },
+            data: { lastReadAt: new Date() },
+        }),
 };

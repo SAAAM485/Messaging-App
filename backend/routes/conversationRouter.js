@@ -5,6 +5,7 @@ const jwtAuth = require("../middlewares/jwtAuth");
 
 router.use(jwtAuth);
 
+router.post("/:conversationId/read", conversationController.markAsRead);
 router
     .route("/:conversationId/participants")
     .delete(conversationController.removeUserFromConversation)
