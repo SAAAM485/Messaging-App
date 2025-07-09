@@ -1,4 +1,5 @@
 const { messageService, MessageError } = require("../services/messageService");
+const { toMessageDTO } = require("./DTOs");
 
 const handleError = (err, res) => {
     if (err instanceof MessageError) {
@@ -46,7 +47,12 @@ const messageController = {
                 content,
                 imageUrl,
             });
-            return res.status(201).json({ success: true, data: message });
+            console.log("Message created:", message);
+            console.log("Message sent:", toMessageDTO(message));
+            return res.status(201).json({
+                success: true,
+                data: toMessageDTO(message),
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -66,7 +72,10 @@ const messageController = {
                 take: take ? parseInt(take) : 50,
                 skip: skip ? parseInt(skip) : 0,
             });
-            return res.status(200).json({ success: true, data: messages });
+            return res.status(200).json({
+                success: true,
+                data: messages.map(toMessageDTO),
+            });
         } catch (err) {
             return handleError(err, res);
         }

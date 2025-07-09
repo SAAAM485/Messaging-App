@@ -44,7 +44,7 @@ describe("User Third-Party Login or Create", () => {
 
         expect(res.statusCode).toBe(200);
         expect(res.body.success).toBe(true);
-        expect(res.body.data.user).toHaveProperty("providerId", newProviderId);
+        expect(res.body.data.user).toHaveProperty("name", "New User 2");
         expect(res.body.data).toHaveProperty("token");
     });
 
@@ -63,10 +63,7 @@ describe("User Third-Party Login or Create", () => {
 
         expect(res.statusCode).toBe(200);
         expect(res.body.success).toBe(true);
-        expect(res.body.data.user).toHaveProperty(
-            "providerId",
-            existingProviderId
-        );
+        expect(res.body.data.user).toHaveProperty("name", "Test User");
         expect(res.body.data).toHaveProperty("token");
 
         // 儲存 token 供後續需要授權的測試使用

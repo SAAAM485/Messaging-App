@@ -1,3 +1,4 @@
+const { toUserDTO, toConversationDTO, toUserPreview } = require("./DTOs");
 const { userService, UserError } = require("../services/userService");
 const jwt = require("jsonwebtoken");
 
@@ -39,7 +40,10 @@ const userController = {
         const userId = req.user.userId;
         try {
             const userProfile = await userService.getUserProfile(userId);
-            return res.status(200).json({ success: true, data: userProfile });
+            return res.status(200).json({
+                success: true,
+                data: toUserDTO(userProfile),
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -50,7 +54,10 @@ const userController = {
         const { email } = extractParams(req, ["email"]);
         try {
             const userProfile = await userService.getUserProfileByEmail(email);
-            return res.status(200).json({ success: true, data: userProfile });
+            return res.status(200).json({
+                success: true,
+                data: toUserDTO(userProfile),
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -60,7 +67,10 @@ const userController = {
     createUserProfile: async (req, res) => {
         try {
             const newUser = await userService.createUserProfile(req.body);
-            return res.status(201).json({ success: true, data: newUser });
+            return res.status(201).json({
+                success: true,
+                data: toUserDTO(newUser),
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -74,7 +84,10 @@ const userController = {
                 userId,
                 req.body
             );
-            return res.status(200).json({ success: true, data: updatedUser });
+            return res.status(200).json({
+                success: true,
+                data: toUserDTO(updatedUser),
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -99,7 +112,10 @@ const userController = {
         const userId = req.user.userId;
         try {
             const conversations = await userService.getConversations(userId);
-            return res.status(200).json({ success: true, data: conversations });
+            return res.status(200).json({
+                success: true,
+                data: conversations.map(toConversationDTO),
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -127,9 +143,10 @@ const userController = {
                 process.env.JWT_SECRET,
                 { expiresIn: "120h" }
             );
-            return res
-                .status(200)
-                .json({ success: true, data: { user, token } });
+            return res.status(200).json({
+                success: true,
+                data: { user: toUserPreview(user), token },
+            });
         } catch (err) {
             return handleError(err, res);
         }

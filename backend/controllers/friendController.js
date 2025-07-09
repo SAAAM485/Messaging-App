@@ -1,4 +1,5 @@
 const { friendService, FriendshipError } = require("../services/friendService");
+const { toFriendDTO } = require("./DTOs");
 
 const handleError = (err, res) => {
     if (err instanceof FriendshipError) {
@@ -40,7 +41,10 @@ const friendController = {
                 userId,
                 friendId
             );
-            return res.status(200).json({ success: true, data: relationship });
+            // 若没找到，service 会 throw；找到之后我们包装一个 DTO
+            return res
+                .status(200)
+                .json({ success: true, data: toFriendDTO(relationship) });
         } catch (err) {
             return handleError(err, res);
         }
@@ -51,7 +55,9 @@ const friendController = {
         const userId = req.user.userId;
         try {
             const friends = await friendService.getAllAcceptedFriends(userId);
-            return res.status(200).json({ success: true, data: friends });
+            return res
+                .status(200)
+                .json({ success: true, data: friends.map(toFriendDTO) });
         } catch (err) {
             return handleError(err, res);
         }
@@ -66,7 +72,9 @@ const friendController = {
                 userId,
                 friendId
             );
-            return res.status(201).json({ success: true, data: request });
+            return res
+                .status(201)
+                .json({ success: true, data: toFriendDTO(request) });
         } catch (err) {
             return handleError(err, res);
         }
@@ -83,7 +91,7 @@ const friendController = {
             );
             return res
                 .status(200)
-                .json({ success: true, data: updatedRequest });
+                .json({ success: true, data: toFriendDTO(updatedRequest) });
         } catch (err) {
             return handleError(err, res);
         }
@@ -111,7 +119,9 @@ const friendController = {
         const userId = req.user.userId;
         try {
             const requests = await friendService.getIncomingRequests(userId);
-            return res.status(200).json({ success: true, data: requests });
+            return res
+                .status(200)
+                .json({ success: true, data: requests.map(toFriendDTO) });
         } catch (err) {
             return handleError(err, res);
         }
@@ -122,7 +132,9 @@ const friendController = {
         const userId = req.user.userId;
         try {
             const requests = await friendService.getOutgoingRequests(userId);
-            return res.status(200).json({ success: true, data: requests });
+            return res
+                .status(200)
+                .json({ success: true, data: requests.map(toFriendDTO) });
         } catch (err) {
             return handleError(err, res);
         }

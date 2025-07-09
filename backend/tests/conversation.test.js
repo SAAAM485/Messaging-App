@@ -133,8 +133,6 @@ describe("Conversation APIs", () => {
             .delete(`/api/conversations/${groupConvId}/participants`)
             .set("Authorization", `Bearer ${token}`);
         expect(res.statusCode).toBe(200);
-        expect(
-            res.body.data.participants.some((p) => p.userId === user1Id)
-        ).toBe(false);
+        expect(res.body.data.some((p) => p.userId === user1Id)).toBe(false);
     });
 });

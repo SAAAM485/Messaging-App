@@ -1,8 +1,8 @@
-const { user } = require("../db/client");
 const {
     conversationService,
     ConversationError,
 } = require("../services/conversationService");
+const { toConversationDTO, toConversationParticipantDTO } = require("./DTOs");
 
 const handleError = (err, res) => {
     if (err instanceof ConversationError) {
@@ -39,7 +39,9 @@ const conversationController = {
     postConversation: async (req, res) => {
         try {
             const conv = await conversationService.createConversation(req.body);
-            return res.status(201).json({ success: true, data: conv });
+            return res
+                .status(201)
+                .json({ success: true, data: toConversationDTO(conv) });
         } catch (err) {
             return handleError(err, res);
         }
@@ -52,7 +54,9 @@ const conversationController = {
             const conv = await conversationService.getConversationById(
                 conversationId
             );
-            return res.status(200).json({ success: true, data: conv });
+            return res
+                .status(200)
+                .json({ success: true, data: toConversationDTO(conv) });
         } catch (err) {
             return handleError(err, res);
         }
@@ -73,9 +77,16 @@ const conversationController = {
                 await conversationService.getConversationParticipants(
                     conversationId
                 );
+
+            const convDto = toConversationDTO(updatedConv);
+
+            convDto.participants = participants.map(
+                toConversationParticipantDTO
+            );
+
             return res.status(200).json({
                 success: true,
-                data: { ...updatedConv, participants },
+                data: convDto,
             });
         } catch (err) {
             return handleError(err, res);
@@ -92,9 +103,10 @@ const conversationController = {
                 await conversationService.getConversationParticipants(
                     conversationId
                 );
-            return res
-                .status(200)
-                .json({ success: true, data: { participants } });
+            return res.status(200).json({
+                success: true,
+                data: participants.map(toConversationParticipantDTO),
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -124,9 +136,10 @@ const conversationController = {
                 conversationId,
                 userId
             );
-            return res
-                .status(200)
-                .json({ success: true, data: updatedLastRead });
+            return res.status(200).json({
+                success: true,
+                data: toConversationParticipantDTO(updatedLastRead),
+            });
         } catch (err) {
             return handleError(err, res);
         }
