@@ -1,6 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 const prisma = require("../db/client");
+const bcrypt = require("bcryptjs");
 
 let token;
 let userId;
@@ -12,26 +13,23 @@ beforeAll(async () => {
     await prisma.conversationParticipant.deleteMany();
     await prisma.conversation.deleteMany();
     await prisma.user.deleteMany();
-
+    const hashedPassword = await bcrypt.hash("password", 10);
     // 建立測試使用者
     const createUser = await prisma.user.create({
         data: {
-            name: "Message Tester",
-            email: "msg@example.com",
-            provider: "google",
-            providerId: "google_msg_id",
-            image: "https://example.com/msg-avatar.png",
+            name: "Test User",
+            email: "test@example.com",
+            password: hashedPassword,
+            provider: "LOCAL",
+            providerId: "test@example.com",
         },
     });
     userId = createUser.id;
 
     // 第三方登入取得 token
-    const res = await request(app).post("/api/users/auth/third-party").send({
-        provider: "google",
-        providerId: "google_msg_id",
-        email: "msg@example.com",
-        name: "Message Tester",
-        image: "https://example.com/msg-avatar.png",
+    const res = await request(app).post("/api/users/auth/login").send({
+        email: "test@example.com",
+        password: "password",
     });
 
     token = res.body.data.token;
@@ -63,7 +61,6 @@ describe("Message APIs", () => {
             .send({
                 content: "Hello, this is a test message.",
             });
-
         expect(res.statusCode).toBe(201);
         expect(res.body.success).toBe(true);
         expect(res.body.data.content).toBe("Hello, this is a test message.");

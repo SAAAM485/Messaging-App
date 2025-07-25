@@ -7,6 +7,7 @@ const {
     listIncomingRequests,
     listOutgoingRequests,
     listAllAcceptedFriends,
+    listLastSeenFriends,
 } = require("../db/queries/friend");
 
 // 驗證 schema 引入，使用 CommonJS
@@ -101,6 +102,24 @@ const friendService = {
     getOutgoingRequests: async (userId) => {
         const validatedUserId = idSchema.parse(userId);
         return listOutgoingRequests(validatedUserId);
+    },
+
+    /** 列出 6 位最近上線的好友 */
+    findLastSeenFriends: async (userId) => {
+        const validatedUserId = idSchema.parse(userId);
+        const friends = await listLastSeenFriends(validatedUserId);
+
+        return friends
+            .sort((a, b) => {
+                const aTime = a.friend.lastSeen
+                    ? new Date(a.friend.lastSeen).getTime()
+                    : 0;
+                const bTime = b.friend.lastSeen
+                    ? new Date(b.friend.lastSeen).getTime()
+                    : 0;
+                return bTime - aTime;
+            })
+            .slice(0, 6);
     },
 };
 

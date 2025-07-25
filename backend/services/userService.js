@@ -1,16 +1,19 @@
+const bcrypt = require("bcryptjs");
 const {
     getUserById,
     getUserByEmail,
+    getUserByName,
     createUser,
     updateProfile,
     updateLastSeen,
     listConversations,
+    listGroupConversations,
     findOrCreateAuthUser,
 } = require("../db/queries/user");
-
 const {
     createProfileSchema,
     updateProfileSchema,
+    usernameSchema,
     authSchema,
     userIdSchema,
     emailSchema,
@@ -37,6 +40,17 @@ const userService = {
     },
 
     /**
+     * 依 username 取得使用者
+     */
+    getUserProfileByName: async (username) => {
+        const validatedUsername = usernameSchema.parse(username);
+        const users = await getUserByName(validatedUsername);
+        console.log("Users found:", users);
+        if (!users) throw new UserError("User not found for given name.");
+        return users;
+    },
+
+    /**
      * 依 email 取得使用者
      */
     getUserProfileByEmail: async (email) => {
@@ -52,7 +66,13 @@ const userService = {
     createUserProfile: async (data) => {
         // 驗證輸入完整性
         const validated = createProfileSchema.parse(data);
-        return createUser(validated);
+        const hashedPassword = await bcrypt.hash(validated.password, 10);
+        return createUser({
+            ...validated,
+            password: hashedPassword,
+            provider: "LOCAL",
+            providerId: validated.email,
+        });
     },
 
     /**
@@ -78,7 +98,15 @@ const userService = {
     },
 
     /**
-     * 取得會話列表
+     * 取得使用者群組會話
+     */
+    getUserGroupConversations: async (userId) => {
+        const validatedUserId = userIdSchema.parse(userId);
+        return listGroupConversations(validatedUserId);
+    },
+
+    /**
+     * 取得單人會話列表
      */
     getConversations: async (userId, rawParams = {}) => {
         const validatedUserId = userIdSchema.parse(userId);
@@ -109,6 +137,25 @@ const userService = {
             validated.name,
             validated.image
         );
+    },
+
+    /**
+     * 使用者登入
+     */
+    login: async (email, password) => {
+        const validatedEmail = emailSchema.parse(email);
+
+        if (!password) throw new UserError("Password is required.");
+
+        // 取得 user
+        const user = await getUserByEmail(validatedEmail);
+        if (!user) throw new UserError("User not found.");
+
+        // 檢查密碼
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        if (!isValidPassword) throw new UserError("Invalid password.");
+
+        return user;
     },
 };
 

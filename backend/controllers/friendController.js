@@ -1,5 +1,9 @@
 const { friendService, FriendshipError } = require("../services/friendService");
-const { toFriendDTO } = require("./DTOs");
+const {
+    toFriendDTO,
+    toUserPreview,
+    toUserPreviewFromRelation,
+} = require("./DTOs");
 
 const handleError = (err, res) => {
     if (err instanceof FriendshipError) {
@@ -41,10 +45,11 @@ const friendController = {
                 userId,
                 friendId
             );
-            // 若没找到，service 会 throw；找到之后我们包装一个 DTO
-            return res
-                .status(200)
-                .json({ success: true, data: toFriendDTO(relationship) });
+
+            return res.status(200).json({
+                success: true,
+                data: relationship ? toFriendDTO(relationship) : null,
+            });
         } catch (err) {
             return handleError(err, res);
         }
@@ -54,10 +59,12 @@ const friendController = {
     getAllAcceptedFriendship: async (req, res) => {
         const userId = req.user.userId;
         try {
-            const friends = await friendService.getAllAcceptedFriends(userId);
-            return res
-                .status(200)
-                .json({ success: true, data: friends.map(toFriendDTO) });
+            const relations = await friendService.getAllAcceptedFriends(userId);
+            const previews = relations.map((rel) =>
+                toUserPreviewFromRelation(rel, userId)
+            );
+
+            return res.status(200).json({ success: true, data: previews });
         } catch (err) {
             return handleError(err, res);
         }
@@ -135,6 +142,22 @@ const friendController = {
             return res
                 .status(200)
                 .json({ success: true, data: requests.map(toFriendDTO) });
+        } catch (err) {
+            return handleError(err, res);
+        }
+    },
+
+    /** 取得上線時間最近的好友 6 位 */
+    getLastSeenFriends: async (req, res) => {
+        const userId = req.user.userId;
+        try {
+            const lastSeenFriends = await friendService.findLastSeenFriends(
+                userId
+            );
+            return res.status(200).json({
+                success: true,
+                data: lastSeenFriends.map(toUserPreview),
+            });
         } catch (err) {
             return handleError(err, res);
         }

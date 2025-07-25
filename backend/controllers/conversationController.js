@@ -35,8 +35,26 @@ const extractParams = (req, keys) =>
     }, {});
 
 const conversationController = {
-    /** 建立對話 */
-    postConversation: async (req, res) => {
+    /** 搜尋或建立私人對話 */
+    findOrCreateConversation: async (req, res) => {
+        const userId = req.user.userId;
+        const { participantId } = extractParams(req, ["participantId"]);
+        try {
+            const conv = await conversationService.findOrCreateConversation(
+                userId,
+                participantId
+            );
+
+            return res
+                .status(200)
+                .json({ success: true, data: toConversationDTO(conv) });
+        } catch (err) {
+            return handleError(err, res);
+        }
+    },
+
+    /** 建立群組對話 */
+    postGroupConversation: async (req, res) => {
         try {
             const conv = await conversationService.createConversation(req.body);
             return res
@@ -50,9 +68,11 @@ const conversationController = {
     /** 取得對話 */
     getConversation: async (req, res) => {
         const { conversationId } = extractParams(req, ["conversationId"]);
+        const userId = req.user.userId;
         try {
             const conv = await conversationService.getConversationById(
-                conversationId
+                conversationId,
+                userId
             );
             return res
                 .status(200)
@@ -98,7 +118,16 @@ const conversationController = {
         const { conversationId } = extractParams(req, ["conversationId"]);
         const userId = req.user.userId;
         try {
-            await conversationService.leaveConversation(conversationId, userId);
+            const result = await conversationService.leaveConversation(
+                conversationId,
+                userId
+            );
+            if (result.deleted) {
+                return res.status(200).json({
+                    success: true,
+                    data: { message: "Conversation deleted." },
+                });
+            }
             const participants =
                 await conversationService.getConversationParticipants(
                     conversationId
@@ -120,9 +149,10 @@ const conversationController = {
                 await conversationService.getConversationParticipants(
                     conversationId
                 );
-            return res
-                .status(200)
-                .json({ success: true, data: { participants } });
+            return res.status(200).json({
+                success: true,
+                data: participants.map(toConversationParticipantDTO),
+            });
         } catch (err) {
             return handleError(err, res);
         }

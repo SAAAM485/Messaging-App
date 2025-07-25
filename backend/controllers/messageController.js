@@ -34,12 +34,17 @@ const extractParams = (req, keys) =>
 const messageController = {
     /** 發送訊息 */
     postMessage: async (req, res) => {
-        const { conversationId, content, imageUrl } = extractParams(req, [
+        const { conversationId, content } = extractParams(req, [
             "conversationId",
             "content",
-            "imageUrl",
         ]);
         const userId = req.user.userId;
+
+        let imageUrl = null;
+        if (req.file) {
+            imageUrl = `/uploads/messages/${req.file.filename}`; // 用於前端存取的 URL
+        }
+
         try {
             const message = await messageService.sendMessage({
                 conversationId,
@@ -47,8 +52,7 @@ const messageController = {
                 content,
                 imageUrl,
             });
-            console.log("Message created:", message);
-            console.log("Message sent:", toMessageDTO(message));
+
             return res.status(201).json({
                 success: true,
                 data: toMessageDTO(message),

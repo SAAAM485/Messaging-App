@@ -11,6 +11,7 @@ export interface User {
 export interface Friend {
     id: string;
     status: string;
+    user?: UserPreview;
     userId: string;
     friend?: UserPreview;
     friendId: string;
@@ -29,6 +30,8 @@ export interface Message {
 export interface Conversation {
     id: string;
     name?: string;
+    unreadCount: number;
+    lastReadAt?: Date | null;
     isGroup: boolean;
     messages: Message[];
     participants: ConversationParticipant[];
@@ -38,14 +41,42 @@ export interface ConversationParticipant {
     id: string;
     conversationId: string;
     user: UserPreview;
-    userId: string;
     lastReadAt?: Date;
 }
 
-interface UserPreview {
+export interface UserPreview {
     id: string;
     name?: string;
     image?: string;
     motto?: string;
     lastSeen?: Date;
+}
+
+export interface AuthData {
+    user: UserPreview;
+    token: string;
+}
+
+export interface LoginPayload {
+    email: string;
+    password: string;
+}
+
+export interface RegisterPayload {
+    name: string;
+    email: string;
+    password: string;
+}
+
+export interface ThirdPartyLoginPayload {
+    credential: string;
+}
+
+export interface ApiResponse<T> {
+    success: boolean;
+    data?: T;
+    error?: {
+        code: string;
+        message: string;
+    };
 }

@@ -3,7 +3,11 @@ const {
     getConversationById,
     addParticipant,
     removeParticipant,
+    countParticipants,
+    deleteConversationIfEmpty,
     listParticipants,
+    findPrivateConversation,
+    updateLastReadAt,
 } = require("../db/queries/conversation");
 
 const {
@@ -21,6 +25,28 @@ const ConversationError = class extends Error {
 };
 
 const conversationService = {
+    findOrCreateConversation: async (userId1, userId2) => {
+        userIdSchema.parse(userId1);
+        userIdSchema.parse(userId2);
+
+        if (userId1 === userId2) {
+            throw new ConversationError(
+                "Cannot start a conversation with yourself."
+            );
+        }
+
+        const existing = await findPrivateConversation(userId1, userId2);
+        if (existing) return existing;
+
+        const conv = await createConversation({ isGroup: false });
+        await Promise.all([
+            addParticipant({ conversationId: conv.id, userId: userId1 }),
+            addParticipant({ conversationId: conv.id, userId: userId2 }),
+        ]);
+
+        return getConversationById(conv.id);
+    },
+
     createConversation: async ({ isGroup, name, participants }) => {
         const validated = createConvSchema.parse({
             isGroup,
@@ -31,7 +57,6 @@ const conversationService = {
             isGroup: validated.isGroup,
             name: validated.name,
         });
-        // 預設 participants: Array<string>
         await Promise.all(
             validated.participants.map((uid) =>
                 addParticipant({ conversationId: conv.id, userId: uid })
@@ -40,10 +65,16 @@ const conversationService = {
         return conv;
     },
 
-    getConversationById: async (conversationId) => {
+    getConversationById: async (conversationId, userId) => {
         const convId = convIdSchema.parse(conversationId);
+        const uId = userIdSchema.parse(userId);
         const conv = await getConversationById(convId);
         if (!conv) throw new ConversationError("Conversation not found.");
+        const isUserInConversation = (conv, userId) =>
+            conv.participants.some((p) => p.userId === userId);
+        if (!isUserInConversation(conv, uId)) {
+            throw new ConversationError("User not part of this conversation.");
+        }
         return conv;
     },
 
@@ -66,7 +97,13 @@ const conversationService = {
     leaveConversation: async (convPartId, userId) => {
         const partId = convPartIdSchema.parse(convPartId);
         const uId = userIdSchema.parse(userId);
-        return removeParticipant(partId, uId);
+        await removeParticipant(partId, uId);
+        const remaining = await countParticipants(partId);
+        if (remaining <= 1) {
+            await deleteConversationIfEmpty(partId);
+            return { deleted: true };
+        }
+        return { deleted: false };
     },
 
     getConversationParticipants: async (conversationId) => {

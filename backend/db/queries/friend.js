@@ -10,6 +10,7 @@ module.exports = {
                     { userId: friendId, friendId: userId },
                 ],
             },
+            include: { user: true, friend: true },
         }),
 
     getRequestById: (id) =>
@@ -44,13 +45,35 @@ module.exports = {
     listIncomingRequests: (userId) =>
         prisma.friend.findMany({
             where: { friendId: userId, status: "pending" },
-            include: { user: true },
+            include: { user: true, friend: true },
         }),
 
     // 我發出的邀請
     listOutgoingRequests: (userId) =>
         prisma.friend.findMany({
             where: { userId, status: "pending" },
-            include: { friend: true },
+            include: { user: true, friend: true },
         }),
+
+    listLastSeenFriends: async (userId) => {
+        const friends = await prisma.friend.findMany({
+            where: {
+                status: "accepted",
+                OR: [{ userId }, { friendId: userId }],
+            },
+            include: {
+                user: true,
+                friend: true,
+            },
+        });
+
+        const filtered = friends
+            .map((f) => {
+                const other = f.userId === userId ? f.friend : f.user;
+                return other.lastSeen ? other : null;
+            })
+            .filter(Boolean);
+
+        return filtered;
+    },
 };

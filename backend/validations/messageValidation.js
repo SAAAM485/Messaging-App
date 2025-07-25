@@ -5,8 +5,9 @@ const sendMessageSchema = z.object({
     userId: z.string().cuid("Invalid user ID format"),
     content: z
         .string()
-        .max(500, "Message content cannot exceed 500 characters"),
-    imageUrl: z.string().url().optional(),
+        .max(500, "Message content cannot exceed 500 characters")
+        .optional(),
+    imageUrl: z.string().optional().nullable(),
 });
 
 const getMessagesSchema = z.object({

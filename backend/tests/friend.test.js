@@ -1,6 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 const prisma = require("../db/client");
+const bcrypt = require("bcryptjs");
 
 let user1Id, user2Id, user3Id;
 let token1, token2, token3;
@@ -12,56 +13,54 @@ beforeAll(async () => {
     await prisma.conversationParticipant.deleteMany();
     await prisma.conversation.deleteMany();
     await prisma.user.deleteMany();
+    const hashedPassword = await bcrypt.hash("password", 10);
 
     const u1 = await prisma.user.create({
         data: {
             name: "User1",
             email: "u1@example.com",
-            provider: "google",
-            providerId: "gid1",
+            password: hashedPassword,
+            provider: "LOCAL",
+            providerId: "u1@example.com",
         },
     });
     const u2 = await prisma.user.create({
         data: {
             name: "User2",
             email: "u2@example.com",
-            provider: "google",
-            providerId: "gid2",
+            password: hashedPassword,
+            provider: "LOCAL",
+            providerId: "u2@example.com",
         },
     });
     const u3 = await prisma.user.create({
         data: {
             name: "User3",
             email: "u3@example.com",
-            provider: "google",
-            providerId: "gid3",
+            password: hashedPassword,
+            provider: "LOCAL",
+            providerId: "u3@example.com",
         },
     });
     user1Id = u1.id;
     user2Id = u2.id;
     user3Id = u3.id;
 
-    const res1 = await request(app).post("/api/users/auth/third-party").send({
-        name: "User1",
+    const res1 = await request(app).post("/api/users/auth/login").send({
         email: "u1@example.com",
-        provider: "google",
-        providerId: "gid1",
+        password: "password",
     });
     token1 = res1.body.data.token;
 
-    const res2 = await request(app).post("/api/users/auth/third-party").send({
-        name: "User2",
+    const res2 = await request(app).post("/api/users/auth/login").send({
         email: "u2@example.com",
-        provider: "google",
-        providerId: "gid2",
+        password: "password",
     });
     token2 = res2.body.data.token;
 
-    const res3 = await request(app).post("/api/users/auth/third-party").send({
-        name: "User3",
+    const res3 = await request(app).post("/api/users/auth/login").send({
         email: "u3@example.com",
-        provider: "google",
-        providerId: "gid3",
+        password: "password",
     });
     token3 = res3.body.data.token;
 });
@@ -94,7 +93,7 @@ describe("Friend APIs", () => {
 
     test("Get all sent requests (user 1)", async () => {
         const res = await request(app)
-            .get("/api/friends/friend-requests/sent")
+            .get("/api/friends/requests/sent")
             .set("Authorization", `Bearer ${token1}`);
 
         expect(res.statusCode).toBe(200);
@@ -104,7 +103,7 @@ describe("Friend APIs", () => {
 
     test("Get received requests (user 2)", async () => {
         const res = await request(app)
-            .get("/api/friends/friend-requests")
+            .get("/api/friends/requests")
             .set("Authorization", `Bearer ${token2}`);
 
         expect(res.statusCode).toBe(200);
@@ -114,7 +113,7 @@ describe("Friend APIs", () => {
 
     test("Accept friend request", async () => {
         const res = await request(app)
-            .patch(`/api/friends/friend-requests/${friendRequestId}`)
+            .patch(`/api/friends/requests/${friendRequestId}`)
             .set("Authorization", `Bearer ${token2}`);
 
         expect(res.statusCode).toBe(200);
@@ -129,17 +128,19 @@ describe("Friend APIs", () => {
 
         expect(res.statusCode).toBe(200);
         expect(res.body.success).toBe(true);
-        expect(res.body.data.some((f) => f.friendId === user2Id)).toBe(true);
+        expect(res.body.data.some((f) => f.id === user2Id)).toBe(true);
     });
 
     test("Reject friend request", async () => {
         const resReq = await request(app)
             .post(`/api/friends/friendships/${user3Id}`)
-            .set("Authorization", `Bearer ${token1}`);
+            .set("Authorization", `Bearer ${token1}`); // user1 發送
+
         const rejectId = resReq.body.data.id;
+
         const res = await request(app)
-            .delete(`/api/friends/friend-requests/${rejectId}`)
-            .set("Authorization", `Bearer ${token3}`);
+            .delete(`/api/friends/requests/${rejectId}`) // ✅ 更新路由
+            .set("Authorization", `Bearer ${token3}`); // ✅ user3 拒絕
 
         expect(res.statusCode).toBe(200);
         expect(res.body.success).toBe(true);

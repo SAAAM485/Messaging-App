@@ -12,6 +12,7 @@ router
     .get(conversationController.listParticipants)
     .post(conversationController.addUserToConversation);
 router.get("/:conversationId", conversationController.getConversation);
-router.post("/", conversationController.postConversation);
+router.post("/private", conversationController.findOrCreateConversation);
+router.post("/group", conversationController.postGroupConversation);
 
 module.exports = router;

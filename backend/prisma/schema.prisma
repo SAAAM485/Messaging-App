@@ -14,15 +14,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
 model User {
   id            String                    @id @default(cuid())
   name          String?
-  email         String?                   @unique
+  password      String?                   @db.VarChar(255)
+  email         String                    @unique
   image         String?
   motto         String?
   bio           String?
   lastSeen      DateTime?
-  provider      String
+  provider      AuthProvider              @default(LOCAL)
   providerId    String
   friends       Friend[]                  @relation("UserFriends")
   friendOf      Friend[]                  @relation("FriendOf")
@@ -68,4 +74,6 @@ model ConversationParticipant {
   user           User         @relation(fields: [userId], references: [id])
   userId         String
   lastReadAt     DateTime?    @default(now())
+
+  @@unique([conversationId, userId], name: "conversationId_userId")
 }

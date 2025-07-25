@@ -11,10 +11,11 @@ router
 router.get("/friendships", friendController.getAllAcceptedFriendship);
 
 router
-    .route("/friend-requests/:requestId")
+    .route("/requests/:requestId")
     .patch(friendController.confirmFriendRequest)
     .delete(friendController.deleteFriendRequest);
-router.get("/friend-requests/sent", friendController.getAllSentRequests);
-router.get("/friend-requests", friendController.getAllReceivedRequests);
+router.get("/requests/sent", friendController.getAllSentRequests);
+router.get("/requests", friendController.getAllReceivedRequests);
+router.get("/lastseen", friendController.getLastSeenFriends);
 
 module.exports = router;

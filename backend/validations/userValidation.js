@@ -7,7 +7,8 @@ const createProfileSchema = z.object({
         .min(1, "Name is required")
         .max(30, "Name max 30 characters"),
     email: z.string().email("Invalid email address"),
-    image: z.string().url("Invalid image URL"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    image: z.string().url("Invalid image URL").optional(),
     motto: z.string().max(100, "Motto max 100 characters").optional(),
     bio: z.string().max(160, "Bio max 160 characters").optional(),
 });
@@ -28,10 +29,13 @@ const userIdSchema = z.string().cuid("Invalid user ID format");
 
 const emailSchema = z.string().email("Invalid email format");
 
+const usernameSchema = z.string();
+
 module.exports = {
     createProfileSchema,
     updateProfileSchema,
     authSchema,
     userIdSchema,
     emailSchema,
+    usernameSchema,
 };

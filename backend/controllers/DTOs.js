@@ -20,7 +20,9 @@ const toConversationDTO = (conversation) => ({
     id: conversation.id,
     name: conversation.name,
     isGroup: conversation.isGroup,
-    messages: (conversation.messages || []).map(toMessageDTO), // ✅ 修正
+    unreadCount: conversation.unreadCount ?? 0,
+    lastReadAt: conversation.lastReadAt ?? null,
+    messages: (conversation.messages || []).map(toMessageDTO),
     participants: (conversation.participants || []).map(
         toConversationParticipantDTO
     ),
@@ -39,8 +41,9 @@ const toMessageDTO = (message) => ({
 const toFriendDTO = (friend) => ({
     id: friend.id,
     status: friend.status,
+    user: friend.user ? toUserPreview(friend.user) : undefined,
     userId: friend.userId,
-    friend: friend.friend ? toUserPreview(friend.friend) : undefined, // ✅ 保險 null check
+    friend: friend.friend ? toUserPreview(friend.friend) : undefined,
     friendId: friend.friendId,
 });
 
@@ -52,6 +55,16 @@ const toConversationParticipantDTO = (participant) => ({
     lastReadAt: participant.lastReadAt,
 });
 
+const toUserPreviewFromRelation = (rel, currentUserId) => {
+    const target = rel.userId === currentUserId ? rel.friend : rel.user;
+    return {
+        id: target.id,
+        name: target.name,
+        image: target.image,
+        lastSeen: target.lastSeen,
+    };
+};
+
 module.exports = {
     toUserPreview,
     toUserDTO,
@@ -59,4 +72,5 @@ module.exports = {
     toMessageDTO,
     toFriendDTO,
     toConversationParticipantDTO,
+    toUserPreviewFromRelation,
 };

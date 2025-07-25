@@ -5,6 +5,7 @@ module.exports = {
     createMessage: ({ conversationId, userId, content, imageUrl = null }) =>
         prisma.message.create({
             data: { conversationId, userId, content, imageUrl },
+            include: { user: true },
         }),
 
     // 撈指定 conversation 的歷史訊息（分頁 or limit）
