@@ -1,0 +1,7 @@
+.topBar {
+    height: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1); /* 設定背景透明度 */
+}

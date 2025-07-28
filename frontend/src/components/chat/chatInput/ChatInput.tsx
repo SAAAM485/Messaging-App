@@ -1,5 +1,7 @@
 import styles from "./ChatInput.module.css";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../../store/useAuthStore";
 import {
     addUserToConversation,
     removeUserFromConversation,
@@ -14,6 +16,8 @@ type Props = {
 };
 
 const ChatInput = ({ conversation, onSend }: Props) => {
+    const navigate = useNavigate();
+    const currentUser = useAuthStore((state) => state.user);
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -60,8 +64,10 @@ const ChatInput = ({ conversation, onSend }: Props) => {
     const handleRemoveUser = async () => {
         setLoading(true);
         const response = await removeUserFromConversation(conversationId);
+        console.log("Response from removeUserFromConversation:", response);
         if (response.success) {
             setError(null);
+            navigate(`/profile/${currentUser.id}`);
         } else {
             setError(response.error?.message || "Failed to remove user");
         }

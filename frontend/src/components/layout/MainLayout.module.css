@@ -1,0 +1,41 @@
+.mainLayout {
+    display: grid;
+    grid-template-columns: 20% 60% 20%; /* 左中右三欄 */
+    grid-template-rows: 100%; /* 佔滿整個高度 */
+    height: 100vh; /* 確保佔滿視窗高度 */
+    width: 100vw; /* 確保佔滿視窗寬度 */
+    overflow: hidden; /* 防止滾動條 */
+}
+
+.leftBar {
+    background-color: rgba(0, 0, 0, 0.6); /* 深色半透明 */
+    overflow-y: auto; /* 內容超出時滾動 */
+    /* 移除 padding */
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.3); /* 中間區域半透明 */
+}
+
+.topBar {
+    height: 4%;
+    background-color: rgba(0, 0, 0, 0.4); /* TopBar 半透明 */
+    flex-shrink: 0; /* 防止被壓縮 */
+    /* 移除 padding */
+    display: flex;
+    align-items: center;
+}
+
+.outlet {
+    height: 96%;
+    overflow-y: auto; /* 內容超出時滾動 */
+    /* 移除 padding */
+}
+
+.rightBar {
+    background-color: rgba(0, 0, 0, 0.2); /* 淺色半透明 */
+    overflow-y: auto; /* 內容超出時滾動 */
+    /* 移除 padding */
+}

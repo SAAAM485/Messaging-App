@@ -42,7 +42,7 @@ const messageController = {
 
         let imageUrl = null;
         if (req.file) {
-            imageUrl = `/uploads/messages/${req.file.filename}`; // 用於前端存取的 URL
+            imageUrl = `/uploads/${req.file.filename}`; // Corrected path
         }
 
         try {

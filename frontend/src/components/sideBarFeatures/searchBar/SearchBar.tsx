@@ -75,9 +75,7 @@ const SearchBar = () => {
                                     onClick={() => setIsFocused(false)}
                                 >
                                     <img
-                                        src={
-                                            user.image || "/default-avatar.png"
-                                        }
+                                        src={user.image || "/logo.png"}
                                         alt={user.name}
                                         className={styles.avatar}
                                     />

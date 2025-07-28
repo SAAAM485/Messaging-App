@@ -56,7 +56,6 @@ export default function LoginPage() {
             callback: handleCredentialResponse,
             auto_select: false,
             cancel_on_tap_outside: true,
-            locale: 'en', // 新增：強制顯示英文
         });
 
         const googleButton = document.getElementById("google-signin-button");
@@ -64,7 +63,7 @@ export default function LoginPage() {
             window.google.accounts.id.renderButton(googleButton, {
                 theme: "outline",
                 size: "large",
-                locale: 'en', // 強制顯示英文
+                locale: "en", // 強制顯示英文
                 width: 300, // 設定按鈕寬度為 300px
             });
         }
@@ -106,6 +105,7 @@ export default function LoginPage() {
         <div className={styles.loginPage}>
             <img src="/logo.png" alt="logo" />
             <h1>IASAM</h1>
+            <p className={styles.motto}>It's About Sending A Message</p>
             <p>
                 {registering ? "Register an account" : "Login to your account"}
             </p>

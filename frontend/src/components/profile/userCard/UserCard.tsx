@@ -5,6 +5,7 @@ import type { User } from "../../../types/models";
 import styles from "./UserCard.module.css";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { updateUserProfile } from "../../../services/userService";
+import { FaCog } from "react-icons/fa"; // 導入齒輪圖示
 
 type Props = {
     userId: string;
@@ -112,12 +113,20 @@ const UserCard = ({ userId }: Props) => {
         <div className={styles.userCardWrapper}>
             <div className={styles.topCard}>
                 {currentUser.id === user.id && !isEditing && (
-                    <button onClick={handleEditClick}>
-                        <img src="/gear.png" alt="setting" />
+                    <button
+                        onClick={handleEditClick}
+                        className={styles.settingsButton}
+                    >
+                        <FaCog className={styles.settingsIcon} />{" "}
+                        {/* 使用 FaCog 圖示 */}
                     </button>
                 )}
                 <img
-                    src={user.image || "/default-avatar.png"}
+                    src={
+                        user.image
+                            ? import.meta.env.VITE_API_BASE_URL + user.image
+                            : "/logo.png"
+                    }
                     alt={user.name}
                     style={{ width: 80, height: 80, borderRadius: "50%" }}
                 />

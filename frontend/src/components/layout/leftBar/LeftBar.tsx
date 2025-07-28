@@ -9,9 +9,11 @@ const LeftBar = () => {
 
     return (
         <aside className={styles.leftBar}>
-            <Notification />
-            <GroupSwitch isGroup={isGroup} setIsGroup={setIsGroup} />
-            <ConversationList isGroup={isGroup} />
+            <div className={styles.leftBarContent}> {/* 新增的 div */}
+                <Notification />
+                <GroupSwitch isGroup={isGroup} setIsGroup={setIsGroup} />
+                <ConversationList isGroup={isGroup} />
+            </div>
         </aside>
     );
 };

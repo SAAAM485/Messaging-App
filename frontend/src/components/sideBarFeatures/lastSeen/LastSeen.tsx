@@ -56,7 +56,7 @@ const LastSeen = () => {
                     return (
                         <li key={friend.id} className={styles.friendItem}>
                             <img
-                                src={friend.image || "/default-avatar.png"}
+                                src={friend.image || "/logo.png"}
                                 alt={friend.name}
                                 className={styles.avatar}
                             />

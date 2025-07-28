@@ -25,10 +25,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // 設定 Cross-Origin-Opener-Policy
 app.use((req, res, next) => {
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
     next();
 });
 

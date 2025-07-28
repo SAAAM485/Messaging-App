@@ -1,0 +1,62 @@
+.messageWrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.1); /* 半透明背景 */
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.myMessage,
+.otherMessage {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: flex-end;
+}
+
+.myMessage {
+    justify-content: flex-end;
+}
+
+.otherMessage {
+    justify-content: flex-start;
+}
+
+.avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin: 0 0.5rem;
+    background-color: black; /* 添加黑色背景 */
+    object-fit: contain; /* 確保圖片完整顯示 */
+}
+
+.contentWrapper {
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    max-width: 70%;
+    word-wrap: break-word;
+    flex-shrink: 0;
+}
+
+.myMessage .contentWrapper {
+    background-color: rgba(102, 16, 136, 0.8); /* 發送訊息的半透明背景 */
+    color: white;
+}
+
+.otherMessage .contentWrapper {
+    background-color: rgba(255, 255, 255, 0.2); /* 接收訊息的半透明背景 */
+    color: white;
+}
+
+.imgWrapper {
+    max-width: 70%;
+    margin: 0 0.5rem;
+}
+
+.messageImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}

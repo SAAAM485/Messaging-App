@@ -5,7 +5,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 
 type Props = {
     friends: UserPreview[];
-    onConfirm: (payload: { name: string; participantIds: string[] }) => void;
+    onConfirm: (payload: { name: string; participants: string[] }) => void;
     onCancel: () => void;
 };
 
@@ -31,7 +31,7 @@ const MultiUserPickerModal = ({ friends, onConfirm, onCancel }: Props) => {
             return alert("Select at least two friend.");
         onConfirm({
             name: groupName.trim(),
-            participantIds: [...selectedIds, currentUser.id],
+            participants: [...selectedIds, currentUser.id],
         });
     };
 
@@ -57,7 +57,7 @@ const MultiUserPickerModal = ({ friends, onConfirm, onCancel }: Props) => {
                             onClick={() => toggleSelect(friend.id)}
                         >
                             <img
-                                src={friend.image || "/default-avatar.png"}
+                                src={friend.image || "/logo.png"}
                                 alt={friend.name}
                                 className={styles.avatar}
                             />

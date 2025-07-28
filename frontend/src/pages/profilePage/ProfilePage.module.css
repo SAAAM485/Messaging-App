@@ -1,0 +1,24 @@
+.profilePage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    height: 100%; /* 佔滿 Outlet */
+    width: 100%; /* 佔滿 Outlet */
+}
+
+.profilePage img {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.profilePage h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.profilePage p {
+    color: rgba(255, 255, 255, 0.8);
+}

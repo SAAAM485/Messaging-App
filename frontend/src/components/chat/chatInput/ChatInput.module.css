@@ -1,0 +1,28 @@
+.chatInput {
+    display: flex;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.4); /* 半透明背景 */
+    gap: 1rem;
+}
+
+.chatInput input {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* 半透明邊框 */
+    border-radius: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.2); /* 半透明背景 */
+    color: white;
+}
+
+.chatInput input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.chatInput button {
+    background-color: #661088;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}

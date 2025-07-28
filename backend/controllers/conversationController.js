@@ -55,6 +55,7 @@ const conversationController = {
 
     /** 建立群組對話 */
     postGroupConversation: async (req, res) => {
+        console.log("Received body for group conversation:", req.body); // Add this line
         try {
             const conv = await conversationService.createConversation(req.body);
             return res

@@ -10,6 +10,7 @@ import type {
     ConversationParticipant,
 } from "../../../types/models";
 import { useAuthStore } from "../../../store/useAuthStore";
+import CompositeAvatar from "../../common/CompositeAvatar/CompositeAvatar";
 
 const getOtherParticipants = (
     participants: ConversationParticipant[],
@@ -65,19 +66,10 @@ const ConversationList = ({ isGroup }: { isGroup: boolean }) => {
                     : otherUsers[0]?.name || "Unknown";
 
                 const image = isGroup ? (
-                    <div className={styles.groupAvatarWrapper}>
-                        {otherUsers.slice(0, 4).map((u, idx) => (
-                            <img
-                                key={u.id || idx}
-                                src={u.image || "/default-avatar.png"}
-                                alt={u.name}
-                                className={styles.groupAvatar}
-                            />
-                        ))}
-                    </div>
+                    <CompositeAvatar users={otherUsers.slice(0, 4)} />
                 ) : (
                     <img
-                        src={otherUsers[0]?.image || "/default-avatar.png"}
+                        src={otherUsers[0]?.image || "/logo.png"}
                         alt={otherUsers[0]?.name}
                         className={styles.avatar}
                     />
@@ -88,9 +80,13 @@ const ConversationList = ({ isGroup }: { isGroup: boolean }) => {
                         <Link to={`/chat/${chat.id}`} className={styles.link}>
                             {image}
                             <div className={styles.chatInfo}>
-                                <div className={styles.chatName}>{name}</div>
-                                <div className={styles.lastMsg}>
-                                    {getLastMessage(chat)}
+                                <div className={styles.infoWrapper}>
+                                    <div className={styles.chatName}>
+                                        {name}
+                                    </div>
+                                    <div className={styles.lastMsg}>
+                                        {getLastMessage(chat)}
+                                    </div>
                                 </div>
                                 {chat.unreadCount > 0 ? (
                                     <span className={styles.badge}>

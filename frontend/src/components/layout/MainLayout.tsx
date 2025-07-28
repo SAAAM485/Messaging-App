@@ -6,11 +6,11 @@ import styles from "./MainLayout.module.css";
 
 const MainLayout = () => {
     return (
-        <div className={styles.layout}>
+        <div className={styles.mainLayout}>
             <LeftBar />
-            <div className={styles.mid}>
+            <div className={styles.center}>
                 <TopBar />
-                <main>
+                <main className={styles.outlet}>
                     <Outlet /> {/* 這裡會顯示 ChatPage 或 ProfilePage */}
                 </main>
             </div>

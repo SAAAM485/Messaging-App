@@ -1,0 +1,16 @@
+.chatPage {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: white;
+}
+
+.chatPage > :nth-child(1) {
+    /* ChatHeader component */
+    height: 5vh;
+}
+
+.chatPage > :nth-child(2) {
+    /* Messages component */
+    flex-grow: 1;
+}

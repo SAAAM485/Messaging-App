@@ -1,0 +1,90 @@
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: rgba(255, 255, 255, 0.1); /* 半透明白色背景 */
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+    color: white;
+    width: 90%;
+    max-width: 500px;
+}
+
+.input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.3rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.friendList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.friendItem {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.friendItem:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.friendItem.selected {
+    background-color: rgba(102, 16, 136, 0.5); /* 選中狀態的半透明背景 */
+}
+
+.avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    background-color: black; /* 添加黑色背景 */
+    object-fit: contain; /* 確保圖片完整顯示 */
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.actions button {
+    background-color: #661088;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+.actions button:disabled {
+    background-color: rgba(102, 16, 136, 0.5);
+    cursor: not-allowed;
+}

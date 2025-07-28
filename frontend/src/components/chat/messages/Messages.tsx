@@ -20,7 +20,7 @@ const Messages = ({ conversation, refreshToken }: Props) => {
     const conversationId = conversation.id;
     const currentUser = useAuthStore((s) => s.user);
     const navigate = useNavigate();
-    const scrollRef = useRef<HTMLDivElement | null>(null);
+    const messageContainerRef = useRef<HTMLDivElement | null>(null); // 修改為訊息容器的參考
 
     const fetchMessages = async (conversationId: string, initial = false) => {
         if (initial) setLoading(true);
@@ -58,7 +58,11 @@ const Messages = ({ conversation, refreshToken }: Props) => {
     }, []);
 
     useEffect(() => {
-        scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+        // 直接滾動訊息容器到底部
+        if (messageContainerRef.current) {
+            messageContainerRef.current.scrollTop =
+                messageContainerRef.current.scrollHeight;
+        }
     }, [messages]);
 
     if (loading) return <p>Loading messages...</p>;
@@ -66,15 +70,21 @@ const Messages = ({ conversation, refreshToken }: Props) => {
     if (!currentUser) return null;
 
     return (
-        <div className={styles.messageWrapper}>
-            {messages.map((msg) =>
-                msg.userId === currentUser.id ? (
+        <div className={styles.messageWrapper} ref={messageContainerRef}>
+            {" "}
+            {/* 將參考應用到訊息容器 */}
+            {messages.map((msg) => {
+                console.log("msg.imageUrl:", msg.imageUrl); // Add this line
+                return msg.userId === currentUser.id ? (
                     <div key={msg.id} className={styles.myMessage}>
                         {msg.imageUrl && (
                             <div className={styles.imgWrapper}>
                                 {" "}
                                 <img
-                                    src={msg.imageUrl}
+                                    src={
+                                        import.meta.env.VITE_API_BASE_URL +
+                                        msg.imageUrl
+                                    }
                                     alt="sent"
                                     className={styles.messageImage}
                                 />
@@ -86,7 +96,7 @@ const Messages = ({ conversation, refreshToken }: Props) => {
                             </div>
                         )}
                         <img
-                            src={msg.user.image || "/default-avatar.png"}
+                            src={msg.user.image || "/logo.png"}
                             alt={msg.user.name}
                             className={styles.avatar}
                         />
@@ -94,7 +104,7 @@ const Messages = ({ conversation, refreshToken }: Props) => {
                 ) : (
                     <div key={msg.id} className={styles.otherMessage}>
                         <img
-                            src={msg.user.image || "/default-avatar.png"}
+                            src={msg.user.image || "/logo.png"}
                             alt={msg.user.name}
                             className={styles.avatar}
                         />
@@ -102,7 +112,10 @@ const Messages = ({ conversation, refreshToken }: Props) => {
                             <div className={styles.imgWrapper}>
                                 {" "}
                                 <img
-                                    src={msg.imageUrl}
+                                    src={msg.imageUrl.replace(
+                                        "/messages/",
+                                        "/"
+                                    )}
                                     alt="sent"
                                     className={styles.messageImage}
                                 />
@@ -114,9 +127,9 @@ const Messages = ({ conversation, refreshToken }: Props) => {
                             </div>
                         )}
                     </div>
-                )
-            )}
-            <div ref={scrollRef} />
+                );
+            })}
+            {/* 移除此處的空 div */}
         </div>
     );
 };

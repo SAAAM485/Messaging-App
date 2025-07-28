@@ -1,0 +1,72 @@
+.friendListWrapper {
+    padding: 1rem;
+    color: white;
+}
+
+.head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.title {
+    margin: 0;
+}
+
+.head button {
+    background-color: #661088;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4rem;
+    cursor: pointer;
+}
+
+.friendList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto; /* 添加滾動 */
+    height: calc(100vh - 200px); /* 根據實際情況調整高度，確保有足夠空間滾動 */
+}
+
+.friendItem {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.friendItem:last-child {
+    border-bottom: none;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 1rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.avatar {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background-color: black; /* 添加黑色背景 */
+    object-fit: contain; /* 確保圖片完整顯示 */
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-weight: bold;
+}
+
+.motto {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+}

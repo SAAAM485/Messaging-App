@@ -29,10 +29,15 @@ const ChatHeader = ({ conversation }: Props) => {
         conversation.participants,
         currentUser.id
     );
+    const participantNames = otherParticipants.map((u) => u.name).join(", ");
     const name = conversation.isGroup
-        ? conversation.name || otherParticipants.map((u) => u.name).join(", ")
+        ? conversation.name
+            ? `${conversation.name} (${participantNames})`
+            : participantNames
         : otherParticipants[0].name || "Unknown";
     if (!currentUser) return null;
+
+
     return (
         <div className={styles.header}>
             <h2>{name}</h2>

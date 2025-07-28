@@ -13,9 +13,14 @@ export default function ChatPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [messageRefreshToken, setMessageRefreshToken] = useState(0);
+    const [conversationRefreshToken, setConversationRefreshToken] = useState(0);
 
     const refreshMessages = () => {
         setMessageRefreshToken((prev) => prev + 1);
+    };
+
+    const refreshConversation = () => {
+        setConversationRefreshToken((prev) => prev + 1);
     };
 
     useEffect(() => {
@@ -32,7 +37,7 @@ export default function ChatPage() {
             setLoading(false);
         };
         fetchConversation();
-    }, [conversationId]);
+    }, [conversationId, conversationRefreshToken]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;

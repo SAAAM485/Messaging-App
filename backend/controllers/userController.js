@@ -115,7 +115,7 @@ const userController = {
 
         // 如果有上傳圖片就加入 imageUrl 欄位
         if (req.file) {
-            data.imageUrl = `/uploads/profile/${req.file.filename}`;
+            data.imageUrl = `/uploads/${req.file.filename}`;
         }
 
         try {

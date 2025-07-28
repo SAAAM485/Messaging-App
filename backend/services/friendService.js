@@ -111,15 +111,11 @@ const friendService = {
 
         return friends
             .sort((a, b) => {
-                const aTime = a.friend.lastSeen
-                    ? new Date(a.friend.lastSeen).getTime()
-                    : 0;
-                const bTime = b.friend.lastSeen
-                    ? new Date(b.friend.lastSeen).getTime()
-                    : 0;
+                const aTime = a.lastSeen ? new Date(a.lastSeen).getTime() : 0;
+                const bTime = b.lastSeen ? new Date(b.lastSeen).getTime() : 0;
                 return bTime - aTime;
             })
-            .slice(0, 6);
+            .slice(0, 3);
     },
 };
 

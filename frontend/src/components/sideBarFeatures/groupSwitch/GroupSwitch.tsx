@@ -9,13 +9,13 @@ const GroupSwitch = ({ isGroup, setIsGroup }: Props) => (
     <div className={styles.groupSwitch}>
         <button
             onClick={() => setIsGroup(false)}
-            className={isGroup ? "" : "active"}
+            className={isGroup ? "" : `${styles.active}`}
         >
             Chat Room
         </button>
         <button
             onClick={() => setIsGroup(true)}
-            className={isGroup ? "active" : ""}
+            className={isGroup ? `${styles.active}` : ""}
         >
             Group Chat
         </button>

@@ -1,0 +1,66 @@
+.lastSeenWrapper {
+    padding: 1rem;
+    color: white;
+}
+
+.title {
+    margin-bottom: 1rem;
+}
+
+.friendList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.friendItem {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 0;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.friendItem:last-child {
+    border-bottom: none;
+}
+
+.avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    background-color: black; /* 添加黑色背景 */
+    object-fit: contain; /* 確保圖片完整顯示 */
+}
+
+.info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+}
+
+.name {
+    font-weight: bold;
+}
+
+.status {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.onlineDot,
+.offlineDot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+}
+
+.onlineDot {
+    background-color: green;
+}
+
+.offlineDot {
+    background-color: gray;
+}

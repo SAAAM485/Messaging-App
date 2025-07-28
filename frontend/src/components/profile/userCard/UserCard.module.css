@@ -1,0 +1,74 @@
+.userCardWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    padding-top: 2rem;
+    margin: none;
+}
+
+.topCard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    color: white;
+    width: 100%;
+    border-radius: 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.topCard img {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    background-color: black; /* 添加黑色背景 */
+    object-fit: contain; /* 確保圖片完整顯示 */
+}
+
+.topCard h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.topCard p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+}
+
+.bio {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+}
+
+.bio textarea {
+    width: 100%;
+    height: 100px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+}
+
+.settingsButton {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.settingsIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: white; /* 將圖示變為白色 */
+}

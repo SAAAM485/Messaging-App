@@ -29,15 +29,15 @@ const FriendList = () => {
 
     const handleConfirmGroupChat = async ({
         name,
-        participantIds,
+        participants,
     }: {
         name: string;
-        participantIds: string[];
+        participants: string[];
     }) => {
         const response = await postGroupConversation({
             name,
             isGroup: true,
-            participantIds,
+            participants,
         });
 
         if (response.success && response.data) {
@@ -64,7 +64,7 @@ const FriendList = () => {
                                 className={styles.link}
                             >
                                 <img
-                                    src={friend.image || "/default-avatar.png"}
+                                    src={friend.image || "/logo.png"}
                                     alt={friend.name}
                                     className={styles.avatar}
                                 />

@@ -6,6 +6,7 @@ import { getAllReceivedRequests } from "../../../services/friendService";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../../store/logout";
+import { FaSignOutAlt } from "react-icons/fa"; // 導入登出圖示
 
 const Notification = () => {
     const [loading, setLoading] = useState(false);
@@ -74,7 +75,15 @@ const Notification = () => {
                         <span className={styles.badge}>{requests.length}</span>
                     )}
                 </div>
-                <button onClick={() => logout(navigate)}>Logout</button>
+                <button
+                    onClick={() => logout(navigate)}
+                    className={styles.logoutButton}
+                >
+                    {" "}
+                    {/* 添加 className */}
+                    <FaSignOutAlt className={styles.logoutIcon} />{" "}
+                    {/* 使用登出圖示 */}
+                </button>
             </div>
 
             {open && (
@@ -108,7 +117,7 @@ const Notification = () => {
                                             <img
                                                 src={
                                                     otherUser.image ||
-                                                    "/default-avatar.png"
+                                                    "/logo.png"
                                                 }
                                                 alt={
                                                     otherUser.name || "Unknown"

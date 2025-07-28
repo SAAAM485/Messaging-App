@@ -1,0 +1,10 @@
+.leftBar {
+    display: flex;
+    flex-direction: column;
+}
+
+.leftBarContent {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
