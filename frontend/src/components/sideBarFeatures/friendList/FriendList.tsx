@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./FriendList.module.css";
 import { getAllAcceptedFriendship } from "../../../services/friendService";
+import { postGroupConversation } from "../../../services/conversationService";
 import type { UserPreview } from "../../../types/models";
+import MultiUserPickerModal from "../../modal/MultiUserPickerModal";
 
 const FriendList = () => {
     const [friendList, setFriendList] = useState<UserPreview[]>();
+    const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getAllAcceptedFriendship()
@@ -15,13 +19,42 @@ const FriendList = () => {
                 }
             })
             .catch((err) => {
-                console.error("Failed to fetch last seen.", err);
+                console.error("Failed to fetch friend list.", err);
             });
     }, []);
 
+    const handleModalOpen = () => {
+        setShowModal(true);
+    };
+
+    const handleConfirmGroupChat = async ({
+        name,
+        participantIds,
+    }: {
+        name: string;
+        participantIds: string[];
+    }) => {
+        const response = await postGroupConversation({
+            name,
+            isGroup: true,
+            participantIds,
+        });
+
+        if (response.success && response.data) {
+            navigate(`/chat/${response.data.id}`);
+        } else {
+            console.error("Failed to create group chat:", response.error);
+        }
+
+        setShowModal(false);
+    };
+
     return (
         <div className={styles.friendListWrapper}>
-            <h4 className={styles.title}>Friend List -</h4>
+            <div className={styles.head}>
+                <h4 className={styles.title}>Friend List -</h4>
+                <button onClick={handleModalOpen}>+ Group Chat</button>
+            </div>
             <ul className={styles.friendList}>
                 {friendList?.map((friend) => {
                     return (
@@ -48,6 +81,13 @@ const FriendList = () => {
                     );
                 })}
             </ul>
+            {showModal && friendList && (
+                <MultiUserPickerModal
+                    friends={friendList}
+                    onConfirm={handleConfirmGroupChat}
+                    onCancel={() => setShowModal(false)}
+                />
+            )}
         </div>
     );
 };

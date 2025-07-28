@@ -1,0 +1,97 @@
+.loginPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 水平置中 */
+    justify-content: center; /* 垂直置中，如果需要 */
+    min-height: 100vh; /* 確保佔滿整個視窗高度 */
+    text-align: center; /* 確保文字內容也置中 */
+    padding: 1.25rem; /* 20px / 16 = 1.25rem */
+    box-sizing: border-box;
+}
+
+.loginPage img {
+    margin-bottom: 1.25rem; /* 20px / 16 = 1.25rem */
+}
+
+.loginPage h1 {
+    color: white;
+    margin-bottom: 0.625rem; /* 10px / 16 = 0.625rem */
+    letter-spacing: 0.3125rem; /* 5px / 16 = 0.3125rem */
+}
+
+.loginPage p {
+    color: #ccc;
+    margin-bottom: 1.25rem; /* 20px / 16 = 1.25rem */
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9375rem; /* 15px / 16 = 0.9375rem */
+    width: 100%;
+    max-width: 18.75rem; /* 300px / 16 = 18.75rem */
+    margin-bottom: 1.25rem; /* 20px / 16 = 1.25rem */
+}
+
+.form input {
+    padding: 0.625rem; /* 10px / 16 = 0.625rem */
+    border: 0.0625rem solid #555; /* 1px / 16 = 0.0625rem */
+    border-radius: 0.3125rem; /* 5px / 16 = 0.3125rem */
+    background-color: #333;
+    color: white;
+}
+
+.form input::placeholder {
+    color: #aaa;
+}
+
+.form button {
+    padding: 0.625rem; /* 10px / 16 = 0.625rem */
+    border: none;
+    border-radius: 0.3125rem; /* 5px / 16 = 0.3125rem */
+    background-color: #661088; /* 與背景漸層色調一致 */
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form button:hover {
+    background-color: #7a129e;
+}
+
+.loginPage button:not(.form button) {
+    padding: 0.625rem; /* 10px / 16 = 0.625rem */
+    border: 0.0625rem solid #661088; /* 1px / 16 = 0.0625rem */
+    border-radius: 0.3125rem; /* 5px / 16 = 0.3125rem */
+    background-color: transparent;
+    color: #661088;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%; /* 新增：讓按鈕寬度與父容器相同 */
+    max-width: 18.75rem; /* 300px / 16 = 18.75rem */
+}
+
+.loginPage button:not(.form button):hover {
+    background-color: #661088;
+    color: white;
+}
+
+#google-signin-button {
+    margin-top: 1.25rem; /* 20px / 16 = 1.25rem */
+    width: 100%; /* 新增：讓容器寬度與父容器相同 */
+    max-width: 18.75rem; /* 300px / 16 = 18.75rem */
+}
+
+#google-signin-button p {
+    color: #ccc;
+    margin-bottom: 0.625rem; /* 10px / 16 = 0.625rem */
+}
+
+/* 調整 Google 按鈕的樣式，使其與整體設計更協調 */
+#google-signin-button > div {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* 新增：讓 Google 按鈕容器寬度與父容器相同 */
+}

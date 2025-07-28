@@ -1,5 +1,5 @@
 import styles from "./LoginPage.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     login,
@@ -18,6 +18,27 @@ export default function LoginPage() {
     const navigate = useNavigate();
     const setAuth = useAuthStore((state) => state.setAuth);
 
+    const handleCredentialResponse = useCallback(
+        async (response: google.accounts.id.CredentialResponse) => {
+            try {
+                const credential = response.credential;
+                const res = await thirdPartyLoginOrCreate({ credential });
+                if (res.success && res.data) {
+                    setAuth({
+                        token: res.data.token,
+                        user: res.data.user, // 假設後端回傳的資料包含 user
+                    });
+                    navigate("/profile");
+                } else {
+                    alert("Login Failed: " + res.error?.message);
+                }
+            } catch (err) {
+                console.error("Login Error", err);
+            }
+        },
+        [navigate, setAuth]
+    );
+
     // 初始化 Google 登入
     useEffect(() => {
         if (
@@ -35,28 +56,19 @@ export default function LoginPage() {
             callback: handleCredentialResponse,
             auto_select: false,
             cancel_on_tap_outside: true,
+            locale: 'en', // 新增：強制顯示英文
         });
-    }, []);
 
-    const handleCredentialResponse = async (
-        response: google.accounts.id.CredentialResponse
-    ) => {
-        try {
-            const credential = response.credential;
-            const res = await thirdPartyLoginOrCreate({ credential });
-            if (res.success && res.data) {
-                setAuth({
-                    token: res.data.token,
-                    user: res.data.user, // 假設後端回傳的資料包含 user
-                });
-                navigate("/profile");
-            } else {
-                alert("Login Failed: " + res.error?.message);
-            }
-        } catch (err) {
-            console.error("Login Error", err);
+        const googleButton = document.getElementById("google-signin-button");
+        if (googleButton) {
+            window.google.accounts.id.renderButton(googleButton, {
+                theme: "outline",
+                size: "large",
+                locale: 'en', // 強制顯示英文
+                width: 300, // 設定按鈕寬度為 300px
+            });
         }
-    };
+    }, [handleCredentialResponse]);
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -136,13 +148,8 @@ export default function LoginPage() {
                     : "Create new account"}
             </button>
 
-            <div style={{ marginTop: "1rem" }}>
+            <div id="google-signin-button" style={{ marginTop: "1rem" }}>
                 <p>or continue with</p>
-                <img
-                    src="/google-icon.png"
-                    alt="Google Sign-In"
-                    onClick={() => window.google.accounts.id.prompt()}
-                />
             </div>
         </div>
     );

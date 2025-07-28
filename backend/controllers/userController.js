@@ -192,7 +192,7 @@ const userController = {
 
             const payload = ticket.getPayload();
 
-            const provider = "google";
+            const provider = "GOOGLE";
             const providerId = payload.sub;
             const email = payload.email;
             const name = payload.name;
@@ -224,6 +224,7 @@ const userController = {
                 data: { user: toUserPreview(user), token },
             });
         } catch (err) {
+            console.error(err);
             return res.status(401).json({ error: "Invalid Google token" });
         }
     },

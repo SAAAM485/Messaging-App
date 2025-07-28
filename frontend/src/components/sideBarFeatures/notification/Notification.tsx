@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import styles from "./Notification.module.css";
 import type { Friend } from "../../../types/models";
 import { getAllReceivedRequests } from "../../../services/friendService";
-import { useRequireUser } from "../../../store/userRequireUser";
+import { useAuthStore } from "../../../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../../store/logout";
 
 const Notification = () => {
     const [loading, setLoading] = useState(false);
     const [requests, setRequests] = useState<Friend[]>([]);
     const [open, setOpen] = useState(false);
-    const currentUser = useRequireUser();
+    const currentUser = useAuthStore((s) => s.user);
+    const navigate = useNavigate();
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const fetchRequests = () => {
@@ -29,8 +32,12 @@ const Notification = () => {
     };
 
     useEffect(() => {
+        if (!currentUser) {
+            navigate("/login");
+        }
         fetchRequests();
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser]);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -53,6 +60,8 @@ const Notification = () => {
         }
     };
 
+    if (!currentUser) return null;
+
     return (
         <div className={styles.notificationWrapper} ref={wrapperRef}>
             <div className={styles.logoBar}>
@@ -65,6 +74,7 @@ const Notification = () => {
                         <span className={styles.badge}>{requests.length}</span>
                     )}
                 </div>
+                <button onClick={() => logout(navigate)}>Logout</button>
             </div>
 
             {open && (

@@ -66,6 +66,7 @@ export const findOrCreateConversation = async (payload: {
 export const postGroupConversation = async (payload: {
     name?: string;
     isGroup: boolean;
+    participantIds: string[];
 }): Promise<ApiResponse<Conversation>> => {
     return request<Conversation>(
         api.post(`/conversations/group`, payload),

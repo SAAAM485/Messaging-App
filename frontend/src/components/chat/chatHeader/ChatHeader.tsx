@@ -3,14 +3,20 @@ import type {
     Conversation,
     ConversationParticipant,
 } from "../../../types/models";
-import { useRequireUser } from "../../../store/userRequireUser";
+import { useAuthStore } from "../../../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
     conversation: Conversation;
 };
 
 const ChatHeader = ({ conversation }: Props) => {
-    const user = useRequireUser();
+    const currentUser = useAuthStore((s) => s.user);
+    const navigate = useNavigate();
+    if (!currentUser) {
+        navigate("/login");
+        return;
+    }
     const getOtherParticipants = (
         participants: ConversationParticipant[],
         currentUserId: string
@@ -21,12 +27,12 @@ const ChatHeader = ({ conversation }: Props) => {
 
     const otherParticipants = getOtherParticipants(
         conversation.participants,
-        user.id
+        currentUser.id
     );
     const name = conversation.isGroup
         ? conversation.name || otherParticipants.map((u) => u.name).join(", ")
         : otherParticipants[0].name || "Unknown";
-
+    if (!currentUser) return null;
     return (
         <div className={styles.header}>
             <h2>{name}</h2>

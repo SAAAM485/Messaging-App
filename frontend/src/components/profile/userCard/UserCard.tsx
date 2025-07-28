@@ -1,8 +1,9 @@
 import { getUserById } from "../../../services/userService";
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import type { User } from "../../../types/models";
 import styles from "./UserCard.module.css";
-import { useRequireUser } from "../../../store/userRequireUser";
+import { useAuthStore } from "../../../store/useAuthStore";
 import { updateUserProfile } from "../../../services/userService";
 
 type Props = {
@@ -20,9 +21,15 @@ const UserCard = ({ userId }: Props) => {
     const [editName, setEditName] = useState("");
     const [editMotto, setEditMotto] = useState("");
     const [editBio, setEditBio] = useState("");
-    const currentUser = useRequireUser();
+    const currentUser = useAuthStore((s) => s.user);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if (!currentUser) {
+            navigate("/login");
+            return;
+        }
+
         const fetchUser = async () => {
             setLoading(true);
             const response = await getUserById(userId);
@@ -36,7 +43,8 @@ const UserCard = ({ userId }: Props) => {
         };
 
         fetchUser();
-    }, [userId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId, currentUser]);
 
     const handleEditClick = () => {
         if (!user) return;
@@ -97,6 +105,7 @@ const UserCard = ({ userId }: Props) => {
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
+    if (!currentUser) return null;
     if (!user) return <p>User not found</p>;
 
     return (

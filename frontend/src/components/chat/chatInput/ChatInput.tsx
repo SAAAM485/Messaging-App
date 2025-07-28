@@ -1,11 +1,12 @@
 import styles from "./ChatInput.module.css";
 import { useState, useRef } from "react";
 import {
-    // addUserToConversation,
+    addUserToConversation,
     removeUserFromConversation,
 } from "../../../services/conversationService";
 import { sendMessage } from "../../../services/messageService";
 import type { Conversation } from "../../../types/models";
+import UserPickerModal from "../../modal/UserPickerModal";
 
 type Props = {
     conversation: Conversation;
@@ -17,6 +18,7 @@ const ChatInput = ({ conversation, onSend }: Props) => {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showUserPicker, setShowUserPicker] = useState(false);
 
     const conversationId = conversation.id;
 
@@ -40,7 +42,19 @@ const ChatInput = ({ conversation, onSend }: Props) => {
     };
 
     const handleAddUser = async () => {
-        // This function should open a modal or similar UI to select users
+        setShowUserPicker(true);
+    };
+
+    const handleUserSelected = async (userId: string) => {
+        setLoading(true);
+        const response = await addUserToConversation(conversationId, userId);
+        if (!response.success) {
+            setError(response.error?.message || "Failed to add user");
+        } else {
+            onSend(); // 重新 fetch 最新 conversation 資料
+            setError(null);
+        }
+        setLoading(false);
     };
 
     const handleRemoveUser = async () => {
@@ -84,9 +98,7 @@ const ChatInput = ({ conversation, onSend }: Props) => {
             {open && (
                 <div className={styles.altList}>
                     {conversation.isGroup && (
-                        <button onClick={handleAddUser}>
-                            Add User to Chat Room
-                        </button>
+                        <button onClick={handleAddUser}>Add User</button>
                     )}
                     <button onClick={handleRemoveUser}>Quit Chat Room</button>
                     <input
@@ -118,6 +130,12 @@ const ChatInput = ({ conversation, onSend }: Props) => {
                 Send
             </button>
             {error && <p className={styles.error}>{error}</p>}
+            {showUserPicker && (
+                <UserPickerModal
+                    onSelect={handleUserSelected}
+                    onClose={() => setShowUserPicker(false)}
+                />
+            )}
         </div>
     );
 };

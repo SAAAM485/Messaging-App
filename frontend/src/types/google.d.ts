@@ -31,6 +31,9 @@ declare namespace google.accounts.id {
         momentListener?: (notification: PromptMomentNotification) => void
     ): void;
 
+    // ✅ 這個才是正確新增的位置
+    function disableAutoSelect(): void;
+
     interface PromptMomentNotification {
         isDisplayMoment: () => boolean;
         isDisplayed: () => boolean;
@@ -41,8 +44,4 @@ declare namespace google.accounts.id {
         isDismissedMoment: () => boolean;
         getDismissedReason: () => string;
     }
-}
-
-interface Window {
-    google: typeof google;
 }

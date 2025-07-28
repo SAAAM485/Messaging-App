@@ -26,6 +26,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
+// 設定 Cross-Origin-Opener-Policy
+app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    next();
+});
+
 const userRouter = require("./routes/userRouter");
 const conversationRouter = require("./routes/conversationRouter");
 const messageRouter = require("./routes/messageRouter");

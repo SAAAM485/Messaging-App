@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./ConversationList.module.css";
 import {
     getUserConversations,
@@ -9,7 +9,7 @@ import type {
     Conversation,
     ConversationParticipant,
 } from "../../../types/models";
-import { useRequireUser } from "../../../store/userRequireUser";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 const getOtherParticipants = (
     participants: ConversationParticipant[],
@@ -23,9 +23,14 @@ const getLastMessage = (conversation: Conversation) =>
 
 const ConversationList = ({ isGroup }: { isGroup: boolean }) => {
     const [chatRooms, setChatRooms] = useState<Conversation[]>([]);
-    const user = useRequireUser();
+    const currentUser = useAuthStore((s) => s.user);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if (!currentUser) {
+            navigate("/login");
+            return;
+        }
         const fetchConversations = async () => {
             const response = isGroup
                 ? await getUserGroupConversations()
@@ -39,8 +44,10 @@ const ConversationList = ({ isGroup }: { isGroup: boolean }) => {
         };
 
         fetchConversations();
-    }, [isGroup]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isGroup, currentUser]);
 
+    if (!currentUser) return null;
     if (!chatRooms || chatRooms.length === 0) {
         return <div className={styles.empty}>No Conversations</div>;
     }
@@ -50,7 +57,7 @@ const ConversationList = ({ isGroup }: { isGroup: boolean }) => {
             {chatRooms.map((chat) => {
                 const otherUsers = getOtherParticipants(
                     chat.participants,
-                    user.id
+                    currentUser.id
                 );
 
                 const name = isGroup

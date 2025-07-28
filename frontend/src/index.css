@@ -1,3 +1,7 @@
+html {
+  font-size: 16px; /* 設定根字體大小，方便 rem 計算 */
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -24,22 +28,31 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  min-height: 100vh; /* 確保 body 佔滿整個視窗高度 */
+  background: linear-gradient(135deg, #1A0422, #661088); /* 從左上到右下的漸層 */
+  background-size: 250% 250%; /* 讓漸層尺寸大於視窗，以便移動 */
+  animation: gradientAnimation 5s ease infinite alternate; /* 動畫設定 */
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 0%; /* 動畫起始位置：左上 */
+  }
+  100% {
+    background-position: 100% 100%; /* 動畫結束位置：右下 */
+  }
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 3.2rem; /* 轉換為 rem */
   line-height: 1.1;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  border-radius: 0.5rem; /* 轉換為 rem */
+  border: 0.0625rem solid transparent; /* 轉換為 rem */
+  padding: 0.6em 1.2em; /* 保持 em，因為是相對於字體大小 */
+  font-size: 1rem; /* 轉換為 rem */
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
@@ -51,7 +64,7 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 0.25rem auto -webkit-focus-ring-color; /* 轉換為 rem */
 }
 
 @media (prefers-color-scheme: light) {
