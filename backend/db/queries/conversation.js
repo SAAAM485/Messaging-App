@@ -71,10 +71,16 @@ module.exports = {
         }),
 
     // 刪除 participant 小於等於 1 的 Conversation
-    deleteConversationIfEmpty: async (conversationId) =>
-        prisma.conversation.delete({
+    deleteConversationIfEmpty: async (conversationId) => {
+        // 先刪除所有相關的 ConversationParticipant 記錄
+        await prisma.conversationParticipant.deleteMany({
+            where: { conversationId: conversationId },
+        });
+        // 然後刪除 Conversation
+        return prisma.conversation.delete({
             where: { id: conversationId },
-        }),
+        });
+    },
 
     // 查 conversation 的所有 participant
     listParticipants: (conversationId) =>

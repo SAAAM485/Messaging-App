@@ -6,6 +6,7 @@ import { markAsRead } from "../../../services/conversationService";
 import { updateLastSeen } from "../../../services/userService";
 import type { Conversation, Message } from "../../../types/models";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { getImageSrc } from "../../../utils/imageUtils";
 
 type Props = {
     conversation: Conversation;
@@ -72,9 +73,8 @@ const Messages = ({ conversation, refreshToken }: Props) => {
     return (
         <div className={styles.messageWrapper} ref={messageContainerRef}>
             {" "}
-            {/* 將參考應用到訊息容器 */}
             {messages.map((msg) => {
-                console.log("msg.imageUrl:", msg.imageUrl); // Add this line
+                console.log("msg.imageUrl:", msg.imageUrl);
                 return msg.userId === currentUser.id ? (
                     <div key={msg.id} className={styles.myMessage}>
                         {msg.imageUrl && (
@@ -95,19 +95,27 @@ const Messages = ({ conversation, refreshToken }: Props) => {
                                 <p>{msg.content}</p>
                             </div>
                         )}
-                        <img
-                            src={msg.user.image || "/logo.png"}
-                            alt={msg.user.name}
-                            className={styles.avatar}
-                        />
+                        {/* <div className={styles.avatarSection}>
+                            {" "}
+                            <img
+                                src={getImageSrc(msg.user.image)}
+                                alt={msg.user.name}
+                                className={styles.avatar}
+                            />
+                            <p>{msg.user.name}</p>
+                        </div> */}
                     </div>
                 ) : (
                     <div key={msg.id} className={styles.otherMessage}>
-                        <img
-                            src={msg.user.image || "/logo.png"}
-                            alt={msg.user.name}
-                            className={styles.avatar}
-                        />
+                        <div className={styles.avatarSection}>
+                            <img
+                                src={getImageSrc(msg.user.image)}
+                                alt={msg.user.name}
+                                className={styles.avatar}
+                            />
+                            <p>{msg.user.name}</p>
+                        </div>
+
                         {msg.imageUrl && (
                             <div className={styles.imgWrapper}>
                                 {" "}
@@ -129,7 +137,6 @@ const Messages = ({ conversation, refreshToken }: Props) => {
                     </div>
                 );
             })}
-            {/* 移除此處的空 div */}
         </div>
     );
 };

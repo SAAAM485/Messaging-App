@@ -7,6 +7,7 @@ import { useAuthStore } from "../../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../../store/logout";
 import { FaSignOutAlt } from "react-icons/fa"; // 導入登出圖示
+import { getImageSrc } from "../../../utils/imageUtils";
 
 const Notification = () => {
     const [loading, setLoading] = useState(false);
@@ -66,15 +67,23 @@ const Notification = () => {
     return (
         <div className={styles.notificationWrapper} ref={wrapperRef}>
             <div className={styles.logoBar}>
-                <Link to="/profile" className={styles.logoLink}>
-                    <img src="/logo.png" alt="logo" />
-                    <h1>IASAM</h1>
-                </Link>
-                <div className={styles.badgeWrapper} onClick={toggleDropdown}>
-                    {requests.length > 0 && (
-                        <span className={styles.badge}>{requests.length}</span>
-                    )}
+                <div className={styles.leftContainer}>
+                    <Link to="/profile" className={styles.logoLink}>
+                        <img src="/logo.png" alt="logo" />
+                        <h1>IASAM</h1>
+                    </Link>
+                    <div
+                        className={styles.badgeWrapper}
+                        onClick={toggleDropdown}
+                    >
+                        {requests.length > 0 && (
+                            <span className={styles.badge}>
+                                {requests.length}
+                            </span>
+                        )}
+                    </div>
                 </div>
+
                 <button
                     onClick={() => logout(navigate)}
                     className={styles.logoutButton}
@@ -116,7 +125,7 @@ const Notification = () => {
                                         >
                                             <img
                                                 src={
-                                                    otherUser.image ||
+                                                    getImageSrc(otherUser.image) ||
                                                     "/logo.png"
                                                 }
                                                 alt={

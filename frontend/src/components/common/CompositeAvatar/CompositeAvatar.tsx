@@ -1,6 +1,6 @@
-import React from 'react';
 import styles from './CompositeAvatar.module.css';
 import type { UserPreview } from '../../../types/models';
+import { getImageSrc } from '../../../utils/imageUtils';
 
 type Props = {
   users: UserPreview[];
@@ -21,7 +21,7 @@ const CompositeAvatar = ({ users, size = 48 }: Props) => {
       {users.slice(0, 4).map((user, index) => (
         <img
           key={user.id || index}
-          src={user.image || '/logo.png'}
+          src={getImageSrc(user.image)}
           alt={user.name || 'User Avatar'}
           className={`${styles.avatar} ${styles[`avatar${index + 1}`]}`}
           style={{

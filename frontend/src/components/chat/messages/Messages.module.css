@@ -8,11 +8,26 @@
     flex-direction: column;
 }
 
+.avatarSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatarSection p {
+    margin-top: 0.05rem;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .myMessage,
 .otherMessage {
     margin-bottom: 0.5rem;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
 }
 
 .myMessage {
@@ -33,11 +48,12 @@
 }
 
 .contentWrapper {
-    padding: 0.75rem 1rem;
+    padding: 0 1rem;
     border-radius: 1rem;
     max-width: 70%;
     word-wrap: break-word;
     flex-shrink: 0;
+    margin: 0 0.5rem;
 }
 
 .myMessage .contentWrapper {
@@ -56,7 +72,7 @@
 }
 
 .messageImage {
-    max-width: 100%;
+    max-width: 20vw;
     height: auto;
     border-radius: 0.5rem;
 }

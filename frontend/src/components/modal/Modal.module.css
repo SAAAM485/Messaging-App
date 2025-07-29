@@ -44,6 +44,10 @@
     margin-bottom: 1rem;
 }
 
+.modalContentArea {
+    min-height: 300px; /* Ensure consistent height during loading */
+}
+
 .friendItem {
     display: flex;
     align-items: center;
@@ -67,6 +71,33 @@
     margin-right: 0.5rem;
     background-color: black; /* 添加黑色背景 */
     object-fit: contain; /* 確保圖片完整顯示 */
+}
+
+.skeleton {
+    background-color: rgba(255, 255, 255, 0.2); /* 骨架屏背景色 */
+    border-radius: 0.3rem;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton.avatar {
+    border-radius: 50%;
+}
+
+.skeleton.name {
+    width: 60%; /* 模擬名字的寬度 */
+    height: 1rem;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }
 
 .actions {

@@ -13,6 +13,12 @@
     height: 100%; /* 確保 logoBar 佔滿 notificationWrapper 的高度 */
 }
 
+.leftContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* 調整間距 */
+}
+
 .logoLink {
     display: flex;
     align-items: center;

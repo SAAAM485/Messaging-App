@@ -1,0 +1,25 @@
+.altList {
+    position: absolute; /* 讓它彈出 */
+    bottom: 100%; /* 位於 ChatInput 上方 */
+    left: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.8); /* 半透明背景 */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 1000; /* 確保在其他內容之上 */
+}
+
+.altList button {
+    background-color: #661088;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+.altList button:hover {
+    background-color: #7a139e;
+}

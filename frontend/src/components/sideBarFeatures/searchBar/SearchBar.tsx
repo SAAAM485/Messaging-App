@@ -4,6 +4,7 @@ import { useDebounce } from "../../../store/useDebounce";
 import { getUserByName } from "../../../services/userService";
 import type { UserPreview } from "../../../types/models";
 import { Link } from "react-router-dom";
+import { getImageSrc } from "../../../utils/imageUtils";
 
 const SearchBar = () => {
     const [keyword, setKeyword] = useState("");
@@ -75,7 +76,7 @@ const SearchBar = () => {
                                     onClick={() => setIsFocused(false)}
                                 >
                                     <img
-                                        src={user.image || "/logo.png"}
+                                        src={getImageSrc(user.image)}
                                         alt={user.name}
                                         className={styles.avatar}
                                     />

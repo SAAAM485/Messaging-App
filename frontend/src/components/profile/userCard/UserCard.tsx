@@ -6,6 +6,7 @@ import styles from "./UserCard.module.css";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { updateUserProfile } from "../../../services/userService";
 import { FaCog } from "react-icons/fa"; // 導入齒輪圖示
+import { getImageSrc } from "../../../utils/imageUtils";
 
 type Props = {
     userId: string;
@@ -121,41 +122,38 @@ const UserCard = ({ userId }: Props) => {
                         {/* 使用 FaCog 圖示 */}
                     </button>
                 )}
-                <img
-                    src={
-                        user.image
-                            ? import.meta.env.VITE_API_BASE_URL + user.image
-                            : "/logo.png"
-                    }
-                    alt={user.name}
-                    style={{ width: 80, height: 80, borderRadius: "50%" }}
+                <div className={styles.avatarContainer} onClick={() => isEditing && fileInputRef.current?.click()}>
+                    <img
+                        src={getImageSrc(user.image)}
+                        alt={user.name}
+                        className={styles.avatar}
+                    />
+                    {isEditing && (
+                        <div className={styles.uploadOverlay}>
+                            {uploading ? "Uploading..." : "Change Photo"}
+                        </div>
+                    )}
+                </div>
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    accept="image/*"
+                    onChange={handleImageChange}
                 />
                 {isEditing ? (
                     <>
-                        <button
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={uploading}
-                        >
-                            {uploading
-                                ? "Uploading..."
-                                : "Upload Profile Image"}
-                        </button>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            style={{ display: "none" }}
-                            accept="image/*"
-                            onChange={handleImageChange}
-                        />
                         <input
                             type="text"
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
+                            className={styles.editInput}
                         />
                         <input
                             type="text"
                             value={editMotto}
                             onChange={(e) => setEditMotto(e.target.value)}
+                            className={styles.editInput}
                         />
                     </>
                 ) : (
@@ -170,6 +168,7 @@ const UserCard = ({ userId }: Props) => {
                     <textarea
                         value={editBio}
                         onChange={(e) => setEditBio(e.target.value)}
+                        className={styles.editInput}
                     />
                 ) : (
                     user.bio
@@ -177,9 +176,9 @@ const UserCard = ({ userId }: Props) => {
             </div>
 
             {isEditing && (
-                <div>
-                    <button onClick={handleSave}>Save</button>
-                    <button onClick={handleCancel}>Cancel</button>
+                <div className={styles.actions}>
+                    <button onClick={handleSave} className={styles.actionButton}>Save</button>
+                    <button onClick={handleCancel} className={styles.actionButton}>Cancel</button>
                 </div>
             )}
         </div>
