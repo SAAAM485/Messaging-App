@@ -9,7 +9,7 @@ const corsOptions = {
     origin: [
         "http://localhost:5173",
         "https://saaam485.github.io",
-        "https://messagingapp.netlify.app",
+        "https://messagingapp0730.netlify.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -25,7 +25,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 // 設定 Cross-Origin-Opener-Policy
 app.use((req, res, next) => {
