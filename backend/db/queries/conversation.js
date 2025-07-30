@@ -3,35 +3,29 @@ const prisma = require("../client");
 module.exports = {
     // 依 userId 尋找 private conversation
     findPrivateConversation: async (userId1, userId2) => {
-        const convs = await prisma.conversation.findMany({
+        return prisma.conversation.findFirst({
             where: {
                 isGroup: false,
                 participants: {
-                    some: { userId: userId1 },
-                    some: { userId: userId2 },
+                    every: {
+                        userId: {
+                            in: [userId1, userId2],
+                        },
+                    },
                 },
             },
             include: {
-                participants: true,
-            },
-        });
-
-        const matched = convs.find((conv) => {
-            const ids = conv.participants.map((p) => p.userId);
-            return (
-                ids.length === 2 &&
-                ids.includes(userId1) &&
-                ids.includes(userId2)
-            );
-        });
-
-        if (!matched) return;
-
-        return prisma.conversation.findUnique({
-            where: { id: matched.id },
-            include: {
-                participants: { include: { user: true } },
-                messages: { orderBy: { sentAt: "desc" }, take: 1 },
+                participants: {
+                    include: {
+                        user: true,
+                    },
+                },
+                messages: {
+                    orderBy: {
+                        sentAt: "desc",
+                    },
+                    take: 1,
+                },
             },
         });
     },
