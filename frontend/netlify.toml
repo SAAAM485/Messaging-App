@@ -1,0 +1,15 @@
+
+# Netlify configuration file
+
+[build]
+  # This is the directory where your built site will be located.
+  publish = "dist"
+  # The command to build your site.
+  command = "npm run build"
+
+[[redirects]]
+  # This rule handles the SPA routing.
+  # It redirects all requests that are not for existing files to index.html.
+  from = "/*"
+  to = "/index.html"
+  status = 200
